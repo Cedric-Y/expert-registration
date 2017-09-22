@@ -8,6 +8,7 @@ import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.junit.Test;
 
+import com.udiannet.tob.expertreg.dao.UserLoginDao;
 import com.udiannet.tob.expertreg.dao.impl.SessionFactoryManager;
 import com.udiannet.tob.expertreg.domain.User;
 import com.udiannet.tob.expertreg.util.TokenProccessor;
@@ -58,8 +59,8 @@ public class UserLoginTest
 
 		try
 		{
-			session.sele
-			User user = (User) session.selectOne("UserLogin.getUserById", 1);
+			UserLoginDao dao = session.getMapper(UserLoginDao.class);			
+			User user = (User) dao.findUserByUsernameAndPassword("test", "1");
 			System.out.println(user);
 		}
 		finally
