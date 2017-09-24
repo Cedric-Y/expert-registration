@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.udiannet.tob.expertreg.dao.UserLoginDao">
+	<select id="getUserById" parameterType="int" resultType="User">
+		select * from tbl_user where u_id = #{u_id}
+	</select>
+	<select id="findUserByUsernameAndPassword" resultType="User">
+		select * from tbl_user
+		where (u_login_name=#{username} or u_phone=#{username})
+			and u_password=#{password}
+			and u_type=1
+	</select>
+</mapper>  

@@ -5,9 +5,13 @@
         "http://mybatis.org/dtd/mybatis-3-config.dtd">
 
 <configuration>
+	<!-- 类型别名，只能对实体类起别名 -->
 	<typeAliases>
+		<!-- 
 		<typeAlias type="com.udiannet.tob.expertreg.domain.Registration" alias="Registration"/>
 		<typeAlias type="com.udiannet.tob.expertreg.domain.User" alias="User"/>
+		 -->
+		<package name="com.udiannet.tob.expertreg.domain" />
     </typeAliases>
 
 	<environments default="development">
@@ -25,8 +29,11 @@
 	</environments>
 
     <mappers>
+    	<!-- 
         <mapper resource="mapper/Registration.xml"/>
         <mapper resource="mapper/User.xml"/>
+         -->
+        <package name="com.udiannet.tob.expertreg.mapper" />
     </mappers>
 
 </configuration>
