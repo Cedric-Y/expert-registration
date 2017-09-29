@@ -8,13 +8,14 @@
 	<script src="<%=request.getContextPath()%>/js/common.js"></script> 
 </head>
 <body>
-	<form action="${pageContext.request.contextPath}/controller/UserLoginServlet?method=login" method="post">
+	<h6><%=session.getAttribute("msg")%></h6>
+	<form action="${pageContext.request.contextPath}/controller/UserLoginServlet?method=loginSubmit" method="post">
 		<table>
 			<tbody>
 				<tr>
-					<td>用户名或手机号码：</td>
+					<td>用户名或邮箱地址：</td>
 					<td>
-						<input name="username" type="text" />
+						<input name="loginname" type="text" />
 					</td>
 					<td>
 						<a href="">忘记用户名？</a>
@@ -51,7 +52,7 @@
 		</table>
 
 		<hr />
-		<a href="userreg.jsp">注册</a>
+		<a href="${pageContext.request.contextPath}/controller/UserLoginServlet?method=userRegForm">注册</a>
 	</form>
 </body>
 </html>

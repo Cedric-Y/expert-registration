@@ -4,7 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<title>用户注册</title>
+<title>用户资料-编辑</title>
 <script src="<%=request.getContextPath()%>/js/common.js"></script>
 </head>
 <body>
@@ -13,17 +13,15 @@
 		<table>
 			<tbody>
 				<tr>
-					<td>登录用户名：</td>
+					<td>姓名：</td>
 					<td>
-						<input name="loginname" type="text" />
-						（由字母、数字、下划线组成，且开头必须是字母，3到15位）
+						<input name="name" type="text" />（必填）
 					</td>
 				</tr>
 				<tr>
-					<td>邮箱地址：</td>
+					<td>身份证：</td>
 					<td>
-						<input name="email" type="text" />
-						（用于找回用户名或密码）
+						<input name="idcard" type="text" />（必填）
 					</td>
 				</tr>
 				<tr>

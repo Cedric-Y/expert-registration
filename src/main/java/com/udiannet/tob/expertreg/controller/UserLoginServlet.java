@@ -5,7 +5,6 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.geom.AffineTransform;
 import java.awt.geom.Line2D;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -20,14 +19,32 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.udiannet.tob.expertreg.domain.Registration;
+import com.udiannet.tob.expertreg.domain.User;
+import com.udiannet.tob.expertreg.service.ExpertRegistration;
 import com.udiannet.tob.expertreg.service.UserLogin;
+import com.udiannet.tob.expertreg.service.UserRegister;
+import com.udiannet.tob.expertreg.service.impl.ExpertRegistrationImpl;
 import com.udiannet.tob.expertreg.service.impl.UserLoginImpl;
+import com.udiannet.tob.expertreg.service.impl.UserRegisterImpl;
+import com.udiannet.tob.expertreg.util.IDCardValidation;
+import com.udiannet.tob.expertreg.util.InputValidation;
+import com.udiannet.tob.expertreg.util.MD5Encoder;
 import com.udiannet.tob.expertreg.util.TokenProccessor;
 
 public class UserLoginServlet extends HttpServlet
 {
 	// 登录业务层实例
-	private UserLogin userLogin = new UserLoginImpl();
+	private UserLogin userLoginService = new UserLoginImpl();
+
+	// 新用户注册层实例
+	private UserRegister userRegisterService = new UserRegisterImpl();
+
+	// 专家资料层实例
+	private ExpertRegistration expRegService = new ExpertRegistrationImpl();
+
 	/**
 	 * token 检查校验
 	 */
@@ -35,7 +52,7 @@ public class UserLoginServlet extends HttpServlet
 	{
 		String reqToken = request.getParameter("token");
 
-		System.out.println("token: " + reqToken);
+		System.out.println("request-token: " + reqToken);
 		// 1、如果用户提交的表单数据中没有 token，则用户是重复提交了表单
 		if (reqToken == null)
 		{
@@ -65,7 +82,22 @@ public class UserLoginServlet extends HttpServlet
 
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
 	{
+		// 设置接收的信息的字符集
+		request.setCharacterEncoding("UTF-8");
+
+		// 设置字符编码为UTF-8
+//		response.setContentType("text/html");
+//		response.setCharacterEncoding("UTF-8");
+		response.setContentType("text/html;charset=utf-8");
+
+		/* 设置响应头允许ajax跨域访问 */
+		response.setHeader("Access-Control-Allow-Origin", "*");
+		/* 星号表示所有的异域请求都可以接受 */
+		response.setHeader("Access-Control-Allow-Methods", "GET,POST");
+
 		String reqMethod = request.getParameter("method");// 获取方法名
+//		System.out.println("request method: "+reqMethod);
+
 		if (reqMethod == null || reqMethod.isEmpty())
 		{
 			throw new RuntimeException("没有传递method参数,请给出你想调用的方法。");
@@ -97,65 +129,117 @@ public class UserLoginServlet extends HttpServlet
 	}
 
 	/**
-	 * 登录
+	 * 进入登录页面
 	 */
-	private void login(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
+	private void loginForm(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
 	{
-		// 设置字符编码为UTF-8
-//		response.setContentType("text/html");
-//		response.setCharacterEncoding("UTF-8");
-		response.setContentType("text/html;charset=utf-8");
+		// 创建 token，并把 token 存进 session 传递过去
+		String token = TokenProccessor.getInstance().makeToken();
+		System.out.println("loginForm-token: " + token);
+		request.getSession().setAttribute("token", token);
+		// 跳转到登录页面
+		request.getRequestDispatcher("/userlogin.jsp").forward(request, response);
+	}
 
-		/* 设置响应头允许ajax跨域访问 */
-		response.setHeader("Access-Control-Allow-Origin", "*");
-		/* 星号表示所有的异域请求都可以接受 */
-		response.setHeader("Access-Control-Allow-Methods", "GET,POST");
-		Writer out = response.getWriter();
+	/**
+	 * 登录提交
+	 */
+	private void loginSubmit(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
+	{
+		// 是否重复提交
+		if (!checkToken(request))
+		{
+			System.out.println("重复提交了。");
+//			String token = TokenProccessor.getInstance().makeToken();
+//			request.getSession().setAttribute("token", token); // 更新 token
+//			request.getRequestDispatcher("/userlogin.jsp").forward(request, response);
 
-//		//是否重复提交
-//		if (!checkToken(request))
-//		{
-//			System.out.println("重复提交了。");
-//			return;
-//		}
-//		request.getSession().removeAttribute("token");// 移除session中的token
+			return;
+		}
+		String token = TokenProccessor.getInstance().makeToken();
+		request.getSession().setAttribute("token", token); // 更新 token
+
+//		Writer out = response.getWriter();
+
+		// 页面传入的参数：用户名或者email
+		String loginname = request.getParameter("loginname");
+		// 页面传入的参数：密码
+		String password = request.getParameter("password");
+		boolean validate = true;
+		String msg = null;
+		// 用户名或密码不能为空
+		if (validate && (loginname == null || loginname.trim().isEmpty() || password == null || password.trim().isEmpty()))
+		{
+			validate = false;
+			msg = "请输入用户名和密码！";
+		}
 
 		// 进行验证码校验
 		HttpSession session = request.getSession();
 		String checkCode = request.getParameter("checkCode");
-		System.out.println("session=" + session.getAttribute("checkCode") + " ; request=" + checkCode);
+//		System.out.println("session=" + session.getAttribute("checkCode") + " ; request=" + checkCode);
 
 		// 验证码已过期
-		if (((String) session.getAttribute("checkCode")) == null)
+		if (validate && ((String) session.getAttribute("checkCode")) == null)
 		{
-			out.write("<script>alert('验证码已过期,请重新输入。');</script>");
-			request.getRequestDispatcher("/userlogin.jsp").forward(request, response);
-			return;
+			validate = false;
+			msg = "验证码已过期,请重新输入。";
 		}
 
 		// 验证码为空
-		if (checkCode.equals("") || checkCode == null)
+		if (validate && (checkCode.equals("") || checkCode == null))
 		{
-			out.write("<script>alert('请输入验证码！');</script>");
-			return;
+			validate = false;
+			msg = "请输入验证码！";
 		}
 
-		//验证码输入有误
-		if (!checkCode.equalsIgnoreCase((String) session.getAttribute("checkCode")))
+		// 验证码输入有误
+		if (validate && !checkCode.equalsIgnoreCase((String) session.getAttribute("checkCode")))
 		{
-			out.write("<script>alert('验证码不正确,请重新输入。');history.back(-1);</script>");
-			return;
+			validate = false;
+			msg = "验证码不正确,请重新输入。";
 		}
 
 //		System.out.println("校验通过了。");
-//		request.getRequestDispatcher("/result.jsp").forward(request, response);
+//		request.getRequestDispatcher("/result.jsp").forward(request, response);	
+		if (validate)
+		{
+			// 用户是否存在
+//			System.out.println("loginname="+loginname+"; password="+MD5Encoder.encoder(password));
+			User user = userLoginService.userValidate(loginname, MD5Encoder.encoder(password));
+//			(new GsonBuilder().create()).toJson(user, out);
+			if (user != null) // 用户存在
+			{
+				// 登录成功后，更新其后台的登录时间
+				int result = userLoginService.updateUserLoginTime(user);
+				System.out.println("用户登录成功：" + result);
 
-		// 页面传入的参数：用户名或者手机号码
-		String userName = request.getParameter("username");
-		// 页面传入的参数：密码
-		String password = request.getParameter("password");
-		//用户是否存在
-		int result = userLogin.userValidate(userName, password);
+				// 用户是否已经填写了专家资料表了
+				Registration reg = expRegService.findRegistrationByUserLogin(user);
+				if (reg != null) // 用户已经填写过专家资料了，转向显示审核状态页面
+				{
+					Writer out = response.getWriter();
+					// 发送 reg 的 json 到前端
+					(new GsonBuilder().create()).toJson(reg, out);
+					out.close();
+				}
+				else // 用户还没填写过专家资料，转向填写资料页面
+				{
+					request.getRequestDispatcher("/useredit.jsp").forward(request, response);
+				}
+			}
+			else // 用户不存在，继续登录
+			{
+				validate = false;
+				msg = "用户名或密码错误,请重新输入。";
+			}
+		}
+
+		if (!validate)
+		{
+			session.setAttribute("msg", msg);
+			request.getRequestDispatcher("/userlogin.jsp").forward(request, response);
+		}
 	}
 
 	/**
@@ -301,4 +385,168 @@ public class UserLoginServlet extends HttpServlet
 		ImageIO.write(image, "JPEG", response.getOutputStream()); // 输出图片
 	}
 
+	/**
+	 * 进入新用户注册界面，需要传递 token 过去
+	 */
+	private void userRegForm(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
+	{
+		// 创建 token，并把 token 存进 session 传递过去
+		request.getSession().setAttribute("token", TokenProccessor.getInstance().makeToken());
+		// 跳转到新用户注册页面
+		request.getRequestDispatcher("/userreg.jsp").forward(request, response);
+	}
+
+	/**
+	 * 新用户注册，提交注册信息
+	 */
+	private void userRegSubmit(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
+	{
+		// 是否重复提交
+		if (!checkToken(request))
+		{
+			System.out.println("重复提交了。");
+			String token = TokenProccessor.getInstance().makeToken();
+			request.getSession().setAttribute("token", token); // 更新 token
+			request.getRequestDispatcher("/userreg.jsp").forward(request, response);
+			return;
+		}
+		String token = TokenProccessor.getInstance().makeToken();
+		request.getSession().setAttribute("token", token); // 更新 token
+
+//		Writer out = response.getWriter();
+
+		// 页面传入的参数：用户名
+		String loginname = request.getParameter("loginname");
+		// 页面传入的参数：email
+		String email = request.getParameter("email");
+		// 页面传入的参数：密码
+		String password1 = request.getParameter("password1");
+		// 页面传入的参数：确认密码
+		String password2 = request.getParameter("password2");
+
+		boolean validate = true;
+		String msg = null;
+		// 登录用户名校验
+		if (validate && !InputValidation.isLegalLoginName(loginname))
+		{
+			validate = false;
+			System.out.println("用户名错误。");
+			msg = "请输入正确的用户名！";
+//			request.getRequestDispatcher("/userreg.jsp").forward(request, response);
+//			out.write("<script>alert('请输入正确的用户名！');</script>");
+//			out.close();
+		}
+
+		// 注册用户登录名或者邮箱是否已存在
+		User user = userRegisterService.findUserByLoginName(loginname);
+//				(new GsonBuilder().create()).toJson(user, out);
+		if (user != null) // 用户登录名已存在
+		{
+			validate = false;
+			System.out.println("登录名或 email 重复。");
+			msg = "此用户登录名或邮箱地址已存在！";
+		}
+
+		// email校验
+		if (validate && !InputValidation.isLegalEmail(email))
+		{
+			validate = false;
+			System.out.println("email格式错误。");
+			msg = "请输入正确的email！";
+		}
+
+		// 校对密码
+		if (validate && !password1.equals(password2))
+		{
+			validate = false;
+			System.out.println("两次输入的密码不一样。");
+			msg = "请保证两次输入的密码一样！";
+		}
+
+		// 验证密码强度
+		if (validate)
+		{
+			validate = false;
+			switch (InputValidation.isLegalPassword(password1))
+			{
+			case 0: // 验证通过
+				validate = true;
+				break;
+			case 1: // 长度不满足要求
+				System.out.println("密码长度不满足要求。");
+				msg = "密码长度为3到15位！";
+				break;
+
+			case 2:// 纯数字
+				System.out.println("密码是纯数字。");
+				msg = "请确保密码至少包含字母与数字！";
+				break;
+			case 3:// 纯字母
+				System.out.println("密码是纯字母。");
+				msg = "请确保密码至少包含字母与数字！";
+				break;
+
+			case 4:// 纯特殊字符
+				System.out.println("密码是纯特殊字符。");
+				msg = "请确保密码至少包含字母与数字！";
+				break;
+			}
+		}
+
+		if (validate)
+		{
+			// 进行验证码校验
+			HttpSession session = request.getSession();
+			String checkCode = request.getParameter("checkCode");
+//		System.out.println("session=" + session.getAttribute("checkCode") + " ; request=" + checkCode);
+
+			// 验证码已过期
+			if (((String) session.getAttribute("checkCode")) == null)
+			{
+				validate = false;
+				System.out.println("验证码已过期。");
+				msg = "验证码已过期,请重新输入！";
+//				out.write("<script>alert('验证码已过期,请重新输入。');</script>");
+			}
+
+			// 验证码为空
+			if (checkCode.equals("") || checkCode == null)
+			{
+				validate = false;
+				System.out.println("验证码为空。");
+				msg = "请输入验证码！";
+//				out.write("<script>alert('请输入验证码！');</script>");
+			}
+
+			// 验证码输入有误
+			if (!checkCode.equalsIgnoreCase((String) session.getAttribute("checkCode")))
+			{
+				validate = false;
+				System.out.println("验证码错误。");
+				msg = "验证码不正确,请重新输入！";
+//				out.write("<script>alert('验证码不正确,请重新输入。');</script>");
+			}
+		}
+
+		if (!validate)
+		{
+			HttpSession session = request.getSession();
+			session.setAttribute("msg", msg);
+
+//			out.close();
+			request.getRequestDispatcher("/userreg.jsp").forward(request, response);
+			return;
+		}
+
+//		System.out.println("校验通过了。");
+//		request.getRequestDispatcher("/result.jsp").forward(request, response);	
+
+		// 所有的验证通过，可以进行注册了，注册成功后，将返回记录id
+		int u_id = userRegisterService.userRegister(loginname, email, MD5Encoder.encoder(password1));
+		System.out.println("注册成功：" + u_id);
+		Writer out = response.getWriter();
+		out.write("注册成功！请重新登录。");
+		request.getRequestDispatcher("/userlogin.jsp").forward(request, response);
+		out.close();
+	}
 }

@@ -5,39 +5,38 @@ import org.apache.ibatis.session.SqlSession;
 import com.udiannet.tob.expertreg.dao.impl.SessionFactoryManager;
 import com.udiannet.tob.expertreg.domain.User;
 import com.udiannet.tob.expertreg.mapper.UserMapper;
-import com.udiannet.tob.expertreg.service.UserLogin;
+import com.udiannet.tob.expertreg.service.UserRegister;
 
 /**
- * 用户登录相关业务接口实现类
+ * 注册业务接口实现类
  */
-public class UserLoginImpl implements UserLogin
+public class UserRegisterImpl implements UserRegister
 {
 	private SqlSession sqlSession = SessionFactoryManager.openSession();
 
 	/**
-	 * 根据用户输入的用户名和密码进行登录校验，还得包括校验码
+	 * 根据用户登录名，查询记录
 	 */
 	@Override
-	public User userValidate(String loginname, String password)
+	public User findUserByLoginName(String loginname)
 	{
 		UserMapper mapper = sqlSession.getMapper(UserMapper.class);
-		User user = (User) mapper.findUserByLoginnameAndPassword(loginname, password);
+		User user = (User) mapper.findUserByLoginName(loginname);
 //		sqlSession.close();
 		return user;
 	}
 
 	/**
-	 * 用户登录后，更新其登录时间
+	 * 新用户注册：用户名、身份证、手机号码、密码
 	 */
 	@Override
-	public int updateUserLoginTime(User user)
+	public int userRegister(String loginname, String email, String password)
 	{
 		UserMapper mapper = sqlSession.getMapper(UserMapper.class);
-		int resule = mapper.updateUser(user);
+		int resule = mapper.insertUser(loginname, email, password);
 		sqlSession.commit();
 //		sqlSession.close();
 		return resule;
-
 	}
 
 }

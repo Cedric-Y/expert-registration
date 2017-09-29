@@ -5,11 +5,11 @@
 	id="WebApp_ID" version="3.0">
 	<display-name>Expert Web Site</display-name>
 	<welcome-file-list>
-		<welcome-file>userlogin.jsp</welcome-file>
+		<welcome-file>index.jsp</welcome-file>
 	</welcome-file-list>
 	<servlet>
 		<servlet-name>UserLoginServlet</servlet-name>
-		<servlet-class>com.udiannet.tob.expertreg.controller.UserLogin</servlet-class>		
+		<servlet-class>com.udiannet.tob.expertreg.controller.UserLoginServlet</servlet-class>		
 	</servlet>
 	<!-- 
 	<servlet>
@@ -20,7 +20,7 @@
 	
 	<servlet-mapping>
 		<servlet-name>UserLoginServlet</servlet-name>
-		<url-pattern>/controller/UserLogin</url-pattern>
+		<url-pattern>/controller/UserLoginServlet</url-pattern>
 	</servlet-mapping>
 	<!-- 
 	<servlet-mapping>
