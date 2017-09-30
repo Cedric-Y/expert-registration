@@ -4,7 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<META HTTP-EQUIV="Refresh" CONTENT="0;URL=${pageContext.request.contextPath}/controller/UserLoginServlet?method=loginForm">
+<META HTTP-EQUIV="Refresh" CONTENT="0;URL=${pageContext.request.contextPath}/UserLogin?method=userLoginForm">
 <title></title>
 </head>
 <body>

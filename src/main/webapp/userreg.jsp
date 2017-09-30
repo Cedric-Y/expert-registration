@@ -8,8 +8,9 @@
 <script src="<%=request.getContextPath()%>/js/common.js"></script>
 </head>
 <body>
+	<h3>用户注册</h3>
 	<h6><%=session.getAttribute("msg")%></h6>
-	<form action="${pageContext.request.contextPath}/controller/UserLoginServlet?method=userRegSubmit" method="post">
+	<form action="${pageContext.request.contextPath}/UserLogin?method=userRegSubmit" method="post">
 		<table>
 			<tbody>
 				<tr>
@@ -46,8 +47,8 @@
 						<input name="checkCode" type="text" id="checkCode" title="验证码不区分大小写" size="8" ,maxlength="4" />
 						<br/>
 						<input type="hidden" id="checkCodeSrc"
-							value="${pageContext.request.contextPath}/controller/UserLoginServlet?method=checkCode" />
-						<img src="${pageContext.request.contextPath}/controller/UserLoginServlet?method=checkCode" id="checkCodeImg"
+							value="${pageContext.request.contextPath}/UserLogin?method=checkCode" />
+						<img src="${pageContext.request.contextPath}/UserLogin?method=checkCode" id="checkCodeImg"
 							align="middle" onclick="checkCodeReload()"> （点击图片,换一个） 
 					</td>
 				</tr>

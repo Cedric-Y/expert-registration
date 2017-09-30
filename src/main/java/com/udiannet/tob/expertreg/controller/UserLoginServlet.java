@@ -19,7 +19,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.udiannet.tob.expertreg.domain.Registration;
 import com.udiannet.tob.expertreg.domain.User;
@@ -29,11 +28,13 @@ import com.udiannet.tob.expertreg.service.UserRegister;
 import com.udiannet.tob.expertreg.service.impl.ExpertRegistrationImpl;
 import com.udiannet.tob.expertreg.service.impl.UserLoginImpl;
 import com.udiannet.tob.expertreg.service.impl.UserRegisterImpl;
-import com.udiannet.tob.expertreg.util.IDCardValidation;
 import com.udiannet.tob.expertreg.util.InputValidation;
 import com.udiannet.tob.expertreg.util.MD5Encoder;
 import com.udiannet.tob.expertreg.util.TokenProccessor;
 
+/**
+ * 用户登录模块
+ */
 public class UserLoginServlet extends HttpServlet
 {
 	// 登录业务层实例
@@ -44,36 +45,6 @@ public class UserLoginServlet extends HttpServlet
 
 	// 专家资料层实例
 	private ExpertRegistration expRegService = new ExpertRegistrationImpl();
-
-	/**
-	 * token 检查校验
-	 */
-	private boolean checkToken(HttpServletRequest request)
-	{
-		String reqToken = request.getParameter("token");
-
-		System.out.println("request-token: " + reqToken);
-		// 1、如果用户提交的表单数据中没有 token，则用户是重复提交了表单
-		if (reqToken == null)
-		{
-			return false;
-		}
-
-		// 取出存储在 Session 中的 token
-		String sessionToken = (String) request.getSession().getAttribute("token");
-		// 2、如果当前用户的 Session 中不存在 token，则用户是重复提交了表单
-		if (sessionToken == null)
-		{
-			return false;
-		}
-		// 3、存储在 Session 中的 token 与表单提交的 token 不同，则用户是重复提交了表单
-		if (!reqToken.equals(sessionToken))
-		{
-			return false;
-		}
-
-		return true;
-	}
 
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
 	{
@@ -129,117 +100,33 @@ public class UserLoginServlet extends HttpServlet
 	}
 
 	/**
-	 * 进入登录页面
+	 * token 检查校验
 	 */
-	private void loginForm(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
+	private boolean checkToken(HttpServletRequest request)
 	{
-		// 创建 token，并把 token 存进 session 传递过去
-		String token = TokenProccessor.getInstance().makeToken();
-		System.out.println("loginForm-token: " + token);
-		request.getSession().setAttribute("token", token);
-		// 跳转到登录页面
-		request.getRequestDispatcher("/userlogin.jsp").forward(request, response);
-	}
+		String reqToken = request.getParameter("token");
 
-	/**
-	 * 登录提交
-	 */
-	private void loginSubmit(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
-	{
-		// 是否重复提交
-		if (!checkToken(request))
+		System.out.println("request-token: " + reqToken);
+		// 1、如果用户提交的表单数据中没有 token，则用户是重复提交了表单
+		if (reqToken == null)
 		{
-			System.out.println("重复提交了。");
-//			String token = TokenProccessor.getInstance().makeToken();
-//			request.getSession().setAttribute("token", token); // 更新 token
-//			request.getRequestDispatcher("/userlogin.jsp").forward(request, response);
-
-			return;
-		}
-		String token = TokenProccessor.getInstance().makeToken();
-		request.getSession().setAttribute("token", token); // 更新 token
-
-//		Writer out = response.getWriter();
-
-		// 页面传入的参数：用户名或者email
-		String loginname = request.getParameter("loginname");
-		// 页面传入的参数：密码
-		String password = request.getParameter("password");
-		boolean validate = true;
-		String msg = null;
-		// 用户名或密码不能为空
-		if (validate && (loginname == null || loginname.trim().isEmpty() || password == null || password.trim().isEmpty()))
-		{
-			validate = false;
-			msg = "请输入用户名和密码！";
+			return false;
 		}
 
-		// 进行验证码校验
-		HttpSession session = request.getSession();
-		String checkCode = request.getParameter("checkCode");
-//		System.out.println("session=" + session.getAttribute("checkCode") + " ; request=" + checkCode);
-
-		// 验证码已过期
-		if (validate && ((String) session.getAttribute("checkCode")) == null)
+		// 取出存储在 Session 中的 token
+		String sessionToken = (String) request.getSession().getAttribute("token");
+		// 2、如果当前用户的 Session 中不存在 token，则用户是重复提交了表单
+		if (sessionToken == null)
 		{
-			validate = false;
-			msg = "验证码已过期,请重新输入。";
+			return false;
+		}
+		// 3、存储在 Session 中的 token 与表单提交的 token 不同，则用户是重复提交了表单
+		if (!reqToken.equals(sessionToken))
+		{
+			return false;
 		}
 
-		// 验证码为空
-		if (validate && (checkCode.equals("") || checkCode == null))
-		{
-			validate = false;
-			msg = "请输入验证码！";
-		}
-
-		// 验证码输入有误
-		if (validate && !checkCode.equalsIgnoreCase((String) session.getAttribute("checkCode")))
-		{
-			validate = false;
-			msg = "验证码不正确,请重新输入。";
-		}
-
-//		System.out.println("校验通过了。");
-//		request.getRequestDispatcher("/result.jsp").forward(request, response);	
-		if (validate)
-		{
-			// 用户是否存在
-//			System.out.println("loginname="+loginname+"; password="+MD5Encoder.encoder(password));
-			User user = userLoginService.userValidate(loginname, MD5Encoder.encoder(password));
-//			(new GsonBuilder().create()).toJson(user, out);
-			if (user != null) // 用户存在
-			{
-				// 登录成功后，更新其后台的登录时间
-				int result = userLoginService.updateUserLoginTime(user);
-				System.out.println("用户登录成功：" + result);
-
-				// 用户是否已经填写了专家资料表了
-				Registration reg = expRegService.findRegistrationByUserLogin(user);
-				if (reg != null) // 用户已经填写过专家资料了，转向显示审核状态页面
-				{
-					Writer out = response.getWriter();
-					// 发送 reg 的 json 到前端
-					(new GsonBuilder().create()).toJson(reg, out);
-					out.close();
-				}
-				else // 用户还没填写过专家资料，转向填写资料页面
-				{
-					request.getRequestDispatcher("/useredit.jsp").forward(request, response);
-				}
-			}
-			else // 用户不存在，继续登录
-			{
-				validate = false;
-				msg = "用户名或密码错误,请重新输入。";
-			}
-		}
-
-		if (!validate)
-		{
-			session.setAttribute("msg", msg);
-			request.getRequestDispatcher("/userlogin.jsp").forward(request, response);
-		}
+		return true;
 	}
 
 	/**
@@ -378,11 +265,140 @@ public class UserLoginServlet extends HttpServlet
 		}
 
 		HttpSession session = request.getSession(true);
-		session.setMaxInactiveInterval(60); // 验证码1分钟过期
-//		session.setAttribute("sessionId", session.getId());
 		session.setAttribute("checkCode", sRand);
+		session.setAttribute("checkCodeTime", System.currentTimeMillis());// 保存这次生成验证码的时间
 		g.dispose(); // 释放g所占用的系统资源
 		ImageIO.write(image, "JPEG", response.getOutputStream()); // 输出图片
+	}
+
+	/**
+	 * 进入登录页面
+	 */
+	private void userLoginForm(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
+	{
+		HttpSession session = request.getSession();
+		System.out.println("session-method: " + session.getAttribute("method"));
+		System.out.println("session-token: " + session.getAttribute("token"));
+		session.setAttribute("method", "userLoginForm"); // 记录当前 method
+		// 创建 token，并把 token 存进 session 传递过去
+		String token = TokenProccessor.getInstance().makeToken();
+		System.out.println("loginForm-token: " + token);
+		session.setAttribute("token", token);
+		// 跳转到登录页面
+		request.getRequestDispatcher("/userlogin.jsp").forward(request, response);
+	}
+
+	/**
+	 * 登录提交
+	 */
+	private void userLoginSubmit(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
+	{
+		HttpSession session = request.getSession();
+		System.out.println("session-method: " + session.getAttribute("method"));
+		System.out.println("session-token: " + session.getAttribute("token"));
+		// 是否重复提交
+		if (!checkToken(request))
+		{
+			System.out.println("重复提交了。");
+			// session 超时后，要回到登录页面
+//			if (session.getAttribute("method") == null)
+//			{
+			userLoginForm(request, response);
+//			request.getRequestDispatcher("/UserLogin?method=userLoginForm").forward(request, response);
+
+			return;
+//			}
+		}
+
+		session.setAttribute("method", "userLoginSubmit"); // 记录当前 method
+
+		String token = TokenProccessor.getInstance().makeToken();
+		session.setAttribute("token", token); // 更新 token
+
+//		Writer out = response.getWriter();
+
+		// 页面传入的参数：用户名或者email
+		String loginname = request.getParameter("loginname");
+		// 页面传入的参数：密码
+		String password = request.getParameter("password");
+		boolean validate = true;
+		String msg = null;
+		// 用户名或密码不能为空
+		if (validate && (loginname == null || loginname.trim().isEmpty() || password == null || password.trim().isEmpty()))
+		{
+			validate = false;
+			msg = "请输入用户名和密码！";
+		}
+
+		// 进行验证码校验
+		String checkCode = request.getParameter("checkCode");
+//		System.out.println("session=" + session.getAttribute("checkCode") + " ; request=" + checkCode);
+
+		// 验证码已过期（2分钟过期）
+		if (validate && (((String) session.getAttribute("checkCode")) == null || (session.getAttribute("checkCodeTime") != null
+				&& (System.currentTimeMillis() - ((Long) session.getAttribute("checkCodeTime"))) / (1000 * 60) > 2)))
+		{
+			validate = false;
+			msg = "验证码已过期,请重新输入。";
+		}
+
+		// 验证码为空
+		if (validate && (checkCode.equals("") || checkCode == null))
+		{
+			validate = false;
+			msg = "请输入验证码！";
+		}
+
+		// 验证码输入有误
+		if (validate && !checkCode.equalsIgnoreCase((String) session.getAttribute("checkCode")))
+		{
+			validate = false;
+			msg = "验证码不正确,请重新输入。";
+		}
+
+//		System.out.println("校验通过了。");
+//		request.getRequestDispatcher("/result.jsp").forward(request, response);	
+		if (validate)
+		{
+			// 用户是否存在
+//			System.out.println("loginname="+loginname+"; password="+MD5Encoder.encoder(password));
+			User user = userLoginService.userValidate(loginname, MD5Encoder.encoder(password));
+//			(new GsonBuilder().create()).toJson(user, out);
+			if (user != null) // 用户存在
+			{
+				// 登录成功后，更新其后台的登录时间
+				int result = userLoginService.updateUserLoginTime(user);
+				System.out.println("用户登录成功：" + result);
+
+				// 用户是否已经填写了专家资料表了
+				Registration reg = expRegService.findRegistrationByUserLogin(user);
+				if (reg != null) // 用户已经填写过专家资料了，转向显示审核状态页面
+				{
+					Writer out = response.getWriter();
+					// 发送 reg 的 json 到前端
+					(new GsonBuilder().create()).toJson(reg, out);
+					out.close();
+					request.getRequestDispatcher("/userinfo.jsp").forward(request, response);
+				}
+				else // 用户还没填写过专家资料，转向填写资料页面
+				{
+					// 把“u_id”传递过去
+					session.setAttribute("u_id", user.getU_id());
+					request.getRequestDispatcher("/userinfoedit.jsp").forward(request, response);
+				}
+			}
+			else // 用户不存在，继续登录
+			{
+				validate = false;
+				msg = "用户名或密码错误,请重新输入。";
+			}
+		}
+
+		if (!validate)
+		{
+			session.setAttribute("msg", msg);
+			request.getRequestDispatcher("/userlogin.jsp").forward(request, response);
+		}
 	}
 
 	/**
@@ -390,8 +406,21 @@ public class UserLoginServlet extends HttpServlet
 	 */
 	private void userRegForm(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
 	{
+		HttpSession session = request.getSession();
+		System.out.println("session-method: " + session.getAttribute("method"));
+		System.out.println("session-token: " + session.getAttribute("token"));
+		// session 超时后，要回到登录页面
+//		if (session.getAttribute("method") == null)
+//		{
+//			userLoginForm(request,response);
+//			request.getRequestDispatcher("/UserLogin?method=userLoginForm").forward(request, response);
+//			return;
+//		}
+
+		session.setAttribute("method", "userRegForm"); // 记录当前 method
+
 		// 创建 token，并把 token 存进 session 传递过去
-		request.getSession().setAttribute("token", TokenProccessor.getInstance().makeToken());
+		session.setAttribute("token", TokenProccessor.getInstance().makeToken());
 		// 跳转到新用户注册页面
 		request.getRequestDispatcher("/userreg.jsp").forward(request, response);
 	}
@@ -401,17 +430,25 @@ public class UserLoginServlet extends HttpServlet
 	 */
 	private void userRegSubmit(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
 	{
+		HttpSession session = request.getSession();
+		System.out.println("session-method: " + session.getAttribute("method"));
+		System.out.println("session-token: " + session.getAttribute("token"));
 		// 是否重复提交
 		if (!checkToken(request))
 		{
 			System.out.println("重复提交了。");
-			String token = TokenProccessor.getInstance().makeToken();
-			request.getSession().setAttribute("token", token); // 更新 token
-			request.getRequestDispatcher("/userreg.jsp").forward(request, response);
+			// session 超时后，要回到登录页面
+			if (session.getAttribute("method") == null)
+				userLoginForm(request, response);
+			else
+				userRegForm(request, response);
+//				request.getRequestDispatcher("/UserLogin?method=userLoginForm").forward(request, response);
 			return;
 		}
+		session.setAttribute("method", "userRegSubmit"); // 记录当前 method
+
 		String token = TokenProccessor.getInstance().makeToken();
-		request.getSession().setAttribute("token", token); // 更新 token
+		session.setAttribute("token", token); // 更新 token
 
 //		Writer out = response.getWriter();
 
@@ -493,44 +530,40 @@ public class UserLoginServlet extends HttpServlet
 			}
 		}
 
-		if (validate)
-		{
-			// 进行验证码校验
-			HttpSession session = request.getSession();
-			String checkCode = request.getParameter("checkCode");
+		// 进行验证码校验
+		String checkCode = request.getParameter("checkCode");
 //		System.out.println("session=" + session.getAttribute("checkCode") + " ; request=" + checkCode);
 
-			// 验证码已过期
-			if (((String) session.getAttribute("checkCode")) == null)
-			{
-				validate = false;
-				System.out.println("验证码已过期。");
-				msg = "验证码已过期,请重新输入！";
+		// 验证码已过期（2分钟过期）
+		if (validate && (((String) session.getAttribute("checkCode")) == null || (session.getAttribute("checkCodeTime") != null
+				&& (System.currentTimeMillis() - ((Long) session.getAttribute("checkCodeTime"))) / (1000 * 60) > 2)))
+		{
+			validate = false;
+			System.out.println("验证码已过期。");
+			msg = "验证码已过期,请重新输入！";
 //				out.write("<script>alert('验证码已过期,请重新输入。');</script>");
-			}
+		}
 
-			// 验证码为空
-			if (checkCode.equals("") || checkCode == null)
-			{
-				validate = false;
-				System.out.println("验证码为空。");
-				msg = "请输入验证码！";
+		// 验证码为空
+		if (validate && (checkCode.equals("") || checkCode == null))
+		{
+			validate = false;
+			System.out.println("验证码为空。");
+			msg = "请输入验证码！";
 //				out.write("<script>alert('请输入验证码！');</script>");
-			}
+		}
 
-			// 验证码输入有误
-			if (!checkCode.equalsIgnoreCase((String) session.getAttribute("checkCode")))
-			{
-				validate = false;
-				System.out.println("验证码错误。");
-				msg = "验证码不正确,请重新输入！";
+		// 验证码输入有误
+		if (validate && !checkCode.equalsIgnoreCase((String) session.getAttribute("checkCode")))
+		{
+			validate = false;
+			System.out.println("验证码错误。");
+			msg = "验证码不正确,请重新输入！";
 //				out.write("<script>alert('验证码不正确,请重新输入。');</script>");
-			}
 		}
 
 		if (!validate)
 		{
-			HttpSession session = request.getSession();
 			session.setAttribute("msg", msg);
 
 //			out.close();

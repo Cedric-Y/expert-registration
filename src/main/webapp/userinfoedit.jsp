@@ -5,11 +5,10 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <title>用户资料-编辑</title>
-<script src="<%=request.getContextPath()%>/js/common.js"></script>
 </head>
 <body>
 	<h6><%=session.getAttribute("msg")%></h6>
-	<form action="${pageContext.request.contextPath}/controller/UserLoginServlet?method=userRegSubmit" method="post">
+	<form action="${pageContext.request.contextPath}/controller/UserInfoServlet?method=userInfoEditSubmib" method="post">
 		<table>
 			<tbody>
 				<tr>
@@ -39,19 +38,9 @@
 					</td>
 				</tr>
 				<tr>
-					<td width="100px">验证码：</td>
-					<td width="400px">
-						<input name="checkCode" type="text" id="checkCode" title="验证码不区分大小写" size="8" ,maxlength="4" />
-						<br/>
-						<input type="hidden" id="checkCodeSrc"
-							value="${pageContext.request.contextPath}/controller/UserLoginServlet?method=checkCode" />
-						<img src="${pageContext.request.contextPath}/controller/UserLoginServlet?method=checkCode" id="checkCodeImg"
-							align="middle" onclick="checkCodeReload()"> （点击图片,换一个） 
-					</td>
-				</tr>
-				<tr>
 					<td colspan="2">
 						<input type="hidden" name="token" value="<%=session.getAttribute("token")%>">
+						<input type="hidden" name="u_id" value="<%=session.getAttribute("u_id")%>">
 						<input type="submit" value="确定" />
 					</td>
 				</tr>

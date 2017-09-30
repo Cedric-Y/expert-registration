@@ -1,21 +1,17 @@
 package com.udiannet.tob.expertreg.test;
 
-import java.io.Reader;
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Base64;
 
-import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.session.SqlSession;
-import org.apache.ibatis.session.SqlSessionFactory;
-import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.junit.Test;
 
-import com.udiannet.tob.expertreg.dao.UserLoginDao;
 import com.udiannet.tob.expertreg.dao.impl.SessionFactoryManager;
 import com.udiannet.tob.expertreg.domain.User;
 import com.udiannet.tob.expertreg.mapper.UserMapper;
+import com.udiannet.tob.expertreg.util.SendEmail;
 import com.udiannet.tob.expertreg.util.TokenProccessor;
 
 public class UserLoginTest
@@ -65,7 +61,7 @@ public class UserLoginTest
 		try
 		{
 			UserMapper mapper = session.getMapper(UserMapper.class);			
-			User user = (User) mapper.findUserByUsernameAndPassword("test", "1");
+			User user = (User) mapper.findUserByLoginnameAndPassword("test", "1");
 			System.out.println(user);
 		}
 		finally
@@ -95,5 +91,13 @@ public class UserLoginTest
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+	
+	@Test
+	public void sendEmailTest()
+	{          
+        //发送邮件  
+        SendEmail.send("qiuch_mm@tom.com", "java发送邮件测试","这是测试邮件。");  
+        System.out.println("发送邮件");  
 	}
 }
