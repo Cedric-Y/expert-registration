@@ -4,33 +4,22 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-	<title>用户登录</title>	
+	<title>填写邮箱地址</title>	
 	<script src="<%=request.getContextPath()%>/js/common.js"></script> 
 </head>
 <body>
-	<h3>用户登录</h3>
+	<h3>填写邮箱地址</h3>
 	<h6><%=session.getAttribute("msg")%></h6>
-	<form action="${pageContext.request.contextPath}/UserLogin?method=userLoginSubmit" method="post">
+	<form action="${pageContext.request.contextPath}/UserLogin?method=userSendEmailSubmit" method="post">
 		<table>
 			<tbody>
 				<tr>
-					<td>用户名或邮箱地址：</td>
-					<td>
-						<input name="loginname" type="text" />
+					<td>请输入注册时填写的邮箱地址：</td>
+					<td colspan="2">
+						<input name="email" type="text" />
 					</td>
-					<td>
-						<a href="${pageContext.request.contextPath}/UserLogin?method=userEmailForm&reset=1">忘记用户名？</a>
-					</td>
-				</tr>
-				<tr>
-					<td>密码：</td>
-					<td>
-						<input name="password" type="password" />
-					</td>
-					<td>
-						<a href="${pageContext.request.contextPath}/UserLogin?method=userEmailForm&reset=2">忘记密码？</a>
-					</td>
-				</tr>
+					
+				</tr>	
 				<tr>
 					<td>验证码：</td>
 					<td>
@@ -42,18 +31,16 @@
 							id="checkCodeImg" align="middle" onclick="checkCodeReload()">
 							（点击图片,换一个）
 					</td>
-				</tr>
+				</tr>			
 				<tr>
 					<td colspan="3">
 						<input type="hidden" name="token" value="<%=session.getAttribute("token")%>" />
-						<input type="submit" value="登录" />
+						<input type="hidden" name="reset" value="<%=session.getAttribute("reset")%>" />
+						<input type="submit" value="发送验证邮件" />
 					</td>
 				</tr>
 			</tbody>
 		</table>
-
-		<hr />
-		<a href="${pageContext.request.contextPath}/UserLogin?method=userRegForm">注册</a>
 	</form>
 </body>
 </html>

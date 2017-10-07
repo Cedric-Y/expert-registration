@@ -17,7 +17,7 @@
 					<td>登录用户名：</td>
 					<td>
 						<input name="loginname" type="text" />
-						（由字母、数字、下划线组成，且开头必须是字母，3到15位）
+						（由字母、数字或者下划线组成，且开头必须是字母，3到15位）
 					</td>
 				</tr>
 				<tr>
@@ -54,7 +54,7 @@
 				</tr>
 				<tr>
 					<td colspan="2">
-						<input type="hidden" name="token" value="<%=session.getAttribute("token")%>">
+						<input type="hidden" name="token" value="<%=session.getAttribute("token")%>" />
 						<input type="submit" value="确定" />
 					</td>
 				</tr>

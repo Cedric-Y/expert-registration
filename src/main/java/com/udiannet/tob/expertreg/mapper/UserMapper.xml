@@ -2,30 +2,82 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.udiannet.tob.expertreg.mapper.UserMapper">
 	<select id="getUserById" parameterType="int" resultType="User">
-		select * from tbl_user where u_id = #{u_id}
+		select * from tbl_user
+		where u_id = #{u_id}
 	</select>
 	<!-- 根据用户名或者email以及密码，查询记录 -->
 	<select id="findUserByLoginnameAndPassword" resultType="User">
 		select * from tbl_user
-		where (u_login_name=#{loginname} or u_email=#{loginname})
-			and u_password=#{password}
-			and u_type=1
+		where (u_login_name = #{loginname} or u_email = #{loginname})
+			and u_password = #{password}
+			and u_type = 1
 	</select>
-	<!-- 根据用户登录名，查询记录 -->
-	<select id="findUserByLoginName" resultType="User">
+	<!-- 根据用户登录名或者 email，查询记录 -->
+	<select id="findUserByLoginnameOrEmail" resultType="User">
 		select * from tbl_user
-		where (u_login_name=#{loginname} or u_email=#{loginname})
-			and u_type=1
+		where (u_login_name = #{loginname} or u_email = #{email})
+			and u_type = 1
 	</select>
 	<!-- 新用户注册：用户名、email、密码 -->
 	<insert id="insertUser" useGeneratedKeys="true" keyProperty="u_id">
-		insert into tbl_user(u_login_name, u_email, u_password, u_type)
+		insert into	tbl_user(u_login_name, u_email, u_password, u_type)
 		values(#{loginname}, #{email}, #{password}, 1)
 	</insert>
 	<!-- 用户登录后，更新其登录时间 -->
-	<update id="updateUser" parameterType="User">
+	<update id="updateUserUpdateTime" parameterType="User">
 		update tbl_user
-		set u_last_time=getdate()
-		where u_id=#{User.u_id}
+		set u_update_time = getdate()
+		where u_id = #{User.u_id}
+	</update>
+	<!-- 忘记用户名：根据输入的 Email 查询输入是否正确 -->
+	<select id="findUserByEmail" resultType="User">
+		select * from tbl_user
+		where u_email = #{email}
+			and	u_type = 1
+	</select>
+	<!-- 根据用户实体，更新用户信息 -->
+	<update id="updateUserByUser" parameterType="User">
+		UPDATE [tbl_user]
+		SET [u_login_name] = #{User.u_login_name}
+			,[u_email] = #{User.u_email}
+			,[u_password] = #{User.u_password}
+			,[u_create_time] = #{User.u_create_time}
+			,[u_update_time] = #{User.u_update_time}
+			,[u_type] = #{User.u_type}
+			,[u_validate_code] = #{User.u_validate_code}
+			,[u_expire_time] = #{User.u_expire_time}
+		WHERE u_id = #{User.u_id}
+	</update>
+	<!-- 根据用户 id，email，邮件验证码来查询用户 -->
+	<select id="findUserByValidateCode" resultType="User">
+		select * from tbl_user
+		where u_id = #{id}
+			and u_email = #{email}
+			and u_validate_code = #{validatecode}
+			and u_expire_time >= #{currenttime}
+			and u_type = 1
+	</select>
+	<!-- 根据用户名，查找除开当前 u_id 之外的记录 -->
+	<select id="findUserByLoginname" resultType="User">
+		select * from tbl_user
+		where u_id &lt;> #{id}
+			and u_login_name = #{loginname}
+			and u_type = 1
+	</select>
+	<!-- 根据用户 id，重置用户名 -->
+	<update id="resetUserLoginname">
+		UPDATE [tbl_user]
+		SET [u_login_name] = #{loginname}
+			,[u_validate_code] = ''
+			,[u_expire_time] = 0
+		WHERE u_id = #{u_id}
+	</update>
+	<!-- 根据用户 id，重置密码 -->
+	<update id="resetUserPassword">
+		UPDATE [tbl_user]
+		SET [u_password] = #{password}
+			,[u_validate_code] = ''
+			,[u_expire_time] = 0
+		WHERE u_id = #{u_id}
 	</update>
 </mapper>  

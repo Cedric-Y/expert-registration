@@ -4,7 +4,7 @@ import java.security.MessageDigest;
 import java.util.Base64;
 
 /**
- * 对输入密码进行 MD5 加密
+ * 对字符串进行 MD5 加密
  */
 public class MD5Encoder
 {

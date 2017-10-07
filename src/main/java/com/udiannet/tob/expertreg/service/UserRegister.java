@@ -8,9 +8,9 @@ import com.udiannet.tob.expertreg.domain.User;
 public interface UserRegister
 {
 	/**
-	 * 根据用户登录名，查询记录
+	 * 根据用户登录名或者 email，查询记录
 	 */
-	User findUserByLoginName(String loginname);
+	User findUserByLoginnameOrEmail(String loginname, String email);
 	/**
 	 * 新用户注册：用户名、email、密码
 	 */

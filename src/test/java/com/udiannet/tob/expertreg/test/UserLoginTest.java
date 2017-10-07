@@ -4,6 +4,7 @@ import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Base64;
+import java.util.UUID;
 
 import org.apache.ibatis.session.SqlSession;
 import org.junit.Test;
@@ -56,6 +57,7 @@ public class UserLoginTest
 	@Test
 	public void findUserByUsernameAndPasswordTest()
 	{
+//		System.out.println(System.getProperty("java.library.path"));
 		SqlSession session = SessionFactoryManager.openSession();
 
 		try
@@ -97,7 +99,13 @@ public class UserLoginTest
 	public void sendEmailTest()
 	{          
         //发送邮件  
-        SendEmail.send("qiuch_mm@tom.com", "java发送邮件测试","这是测试邮件。");  
+        SendEmail.send("qiuch_mm@tom.com", "reset-loginname", "test");  
         System.out.println("发送邮件");  
+	}
+	
+	@Test
+	public void uuidTest()
+	{
+		System.out.println(UUID.randomUUID().toString());
 	}
 }

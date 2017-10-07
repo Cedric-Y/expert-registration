@@ -18,7 +18,7 @@ public class UserLoginImpl implements UserLogin
 	 * 根据用户输入的用户名和密码进行登录校验，还得包括校验码
 	 */
 	@Override
-	public User userValidate(String loginname, String password)
+	public User userValidateForLogin(String loginname, String password)
 	{
 		UserMapper mapper = sqlSession.getMapper(UserMapper.class);
 		User user = (User) mapper.findUserByLoginnameAndPassword(loginname, password);
@@ -33,11 +33,80 @@ public class UserLoginImpl implements UserLogin
 	public int updateUserLoginTime(User user)
 	{
 		UserMapper mapper = sqlSession.getMapper(UserMapper.class);
-		int resule = mapper.updateUser(user);
+		int resule = mapper.updateUserUpdateTime(user);
 		sqlSession.commit();
 //		sqlSession.close();
 		return resule;
-
 	}
 
+	/**
+	 * 忘记用户名：根据输入的 Email 查询输入是否正确
+	 */
+	@Override
+	public User findUserByEmail(String email)
+	{
+		UserMapper mapper = sqlSession.getMapper(UserMapper.class);
+		User user = (User) mapper.findUserByEmail(email);
+		return user;
+	}
+
+	/**
+	 * 根据用户实体，更新用户信息
+	 */
+	@Override
+	public int updateUserByUser(User user)
+	{
+		UserMapper mapper = sqlSession.getMapper(UserMapper.class);
+		int resule = mapper.updateUserByUser(user);
+		sqlSession.commit();
+		return resule;
+	}
+
+	/**
+	 * 根据用户 id，email，邮件验证码来查询用户
+	 */
+	@Override
+	public User userValidateForReset(int id, String email, String validateCode, long currentTime)
+	{
+		UserMapper mapper = sqlSession.getMapper(UserMapper.class);
+		User user = (User) mapper.findUserByValidateCode(id, email, validateCode, currentTime);
+		return user;
+	}
+
+	/**
+	 * 根据用户名，查找除开当前 u_id 之外的记录
+	 */
+	@Override
+	public User findUserByLoginname(int u_id, String loginname)
+	{
+		UserMapper mapper = sqlSession.getMapper(UserMapper.class);
+		User user = (User) mapper.findUserByLoginname(u_id, loginname);
+		return user;
+	}
+
+	/**
+	 * 根据用户 id，重置用户名
+	 */
+	@Override
+	public int resetUserLoginname(int u_id, String loginname)
+	{
+		UserMapper mapper = sqlSession.getMapper(UserMapper.class);
+		int resule = mapper.resetUserLoginname(u_id, loginname);
+		sqlSession.commit();
+		return resule;
+	}
+
+	/**
+	 * 根据用户 id，重置密码
+	 */
+	@Override
+	public int resetUserPassword(int u_id, String password)
+	{
+		UserMapper mapper = sqlSession.getMapper(UserMapper.class);
+		int resule = mapper.resetUserPassword(u_id, password);
+		sqlSession.commit();
+		return resule;
+	}
+
+	
 }

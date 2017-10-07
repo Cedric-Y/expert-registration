@@ -14,19 +14,27 @@
 				<tr>
 					<td>姓名：</td>
 					<td>
-						<input name="name" type="text" />（必填）
+						<input name="name" type="text" />
+					</td>
+					<td>
+						（必填）
 					</td>
 				</tr>
 				<tr>
 					<td>身份证：</td>
 					<td>
-						<input name="idcard" type="text" />（必填）
+						<input name="idcard" type="text" />
+					</td>
+					<td>
+						（必填）
 					</td>
 				</tr>
 				<tr>
 					<td>密码：</td>
 					<td>
 						<input name="password1" type="password" />
+					</td>
+					<td>
 						（至少是由字母和数字组成，且3到15位）
 					</td>
 				</tr>
@@ -39,8 +47,8 @@
 				</tr>
 				<tr>
 					<td colspan="2">
-						<input type="hidden" name="token" value="<%=session.getAttribute("token")%>">
-						<input type="hidden" name="u_id" value="<%=session.getAttribute("u_id")%>">
+						<input type="hidden" name="token" value="<%=session.getAttribute("token")%>" />
+						<input type="hidden" name="u_id" value="<%=session.getAttribute("u_id")%>" />
 						<input type="submit" value="确定" />
 					</td>
 				</tr>

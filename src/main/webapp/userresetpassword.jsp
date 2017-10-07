@@ -4,31 +4,31 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-	<title>用户登录</title>	
+	<title>重置密码</title>	
 	<script src="<%=request.getContextPath()%>/js/common.js"></script> 
 </head>
 <body>
-	<h3>用户登录</h3>
+	<h3>重置密码</h3>
 	<h6><%=session.getAttribute("msg")%></h6>
-	<form action="${pageContext.request.contextPath}/UserLogin?method=userLoginSubmit" method="post">
+	<form action="${pageContext.request.contextPath}/UserLogin?method=userResetPasswordSubmit" method="post">
 		<table>
 			<tbody>
 				<tr>
-					<td>用户名或邮箱地址：</td>
+					<td>新密码：</td>
 					<td>
-						<input name="loginname" type="text" />
+						<input name="password1" type="password" />
 					</td>
 					<td>
-						<a href="${pageContext.request.contextPath}/UserLogin?method=userEmailForm&reset=1">忘记用户名？</a>
+						（至少是由字母和数字组成，且3到15位）
 					</td>
 				</tr>
 				<tr>
-					<td>密码：</td>
+					<td>确认密码：</td>
 					<td>
-						<input name="password" type="password" />
+						<input name="password2" type="password" />
 					</td>
 					<td>
-						<a href="${pageContext.request.contextPath}/UserLogin?method=userEmailForm&reset=2">忘记密码？</a>
+						（至少是由字母和数字组成，且3到15位）
 					</td>
 				</tr>
 				<tr>
@@ -46,14 +46,14 @@
 				<tr>
 					<td colspan="3">
 						<input type="hidden" name="token" value="<%=session.getAttribute("token")%>" />
-						<input type="submit" value="登录" />
+						<input type="submit" value="重置" />
 					</td>
 				</tr>
 			</tbody>
 		</table>
 
 		<hr />
-		<a href="${pageContext.request.contextPath}/UserLogin?method=userRegForm">注册</a>
+		<a href="${pageContext.request.contextPath}/UserLogin?method=userLoginForm">登录</a>
 	</form>
 </body>
 </html>

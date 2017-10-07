@@ -17,11 +17,11 @@ import javax.mail.internet.MimeMessage;
  */
 public class SendEmail
 {
-	public static final String HOST = "smtp.163.com";
-	public static final String PROTOCOL = "smtp";
-	public static final int PORT = 25;
-	public static final String FROM = "qiuch_mm@163.com";// 发件人的email
-	public static final String PWD = "***";// 发件人密码
+	public static final String HOST = AppProperties.getPropertiesValueByKey("SendEmail.host");
+	public static final String PROTOCOL = AppProperties.getPropertiesValueByKey("SendEmail.protocol");
+	public static final int PORT = Integer.parseInt(AppProperties.getPropertiesValueByKey("SendEmail.port"));
+	public static final String FROM = AppProperties.getPropertiesValueByKey("SendEmail.from");// 发件人的email
+	public static final String PWD = AppProperties.getPropertiesValueByKey("SendEmail.pwd");// 发件人密码
 
 	/**
 	 * 获取Session
@@ -34,6 +34,19 @@ public class SendEmail
 		props.put("mail.smtp.port", PORT);// 设置端口
 		props.put("mail.smtp.auth", true);// 需要请求认证
 
+//		try
+//		{
+//			//QQ邮箱需要下面这段代码，163邮箱不需要 
+//			MailSSLSocketFactory sf = new MailSSLSocketFactory();
+//			sf.setTrustAllHosts(true);
+//			props.put("mail.smtp.ssl.enable", "true");
+//			props.put("mail.smtp.ssl.socketFactory", sf);
+//		}
+//		catch (GeneralSecurityException e)
+//		{
+//			e.printStackTrace();
+//		}
+
 		Authenticator authenticator = new Authenticator()
 		{
 
@@ -44,7 +57,7 @@ public class SendEmail
 			}
 
 		};
-		
+
 		Session session = Session.getDefaultInstance(props, authenticator);
 
 		return session;
@@ -52,16 +65,17 @@ public class SendEmail
 
 	/**
 	 * 发送邮件
+	 * 
 	 * @param toEmail 目的地
 	 * @param subject 邮件主题
 	 * @param content 邮件内容
 	 */
-	public static void send(String toEmail, String type)
+	public static void send(String toEmail, String subject, String content)
 	{
 		Session session = getSession();
 		try
 		{
-			System.out.println("--send--");
+			System.out.println("--开始发送邮件--");
 			// 创建邮件对象
 			Message msg = new MimeMessage(session);
 
@@ -70,43 +84,18 @@ public class SendEmail
 			InternetAddress[] address =
 			{ new InternetAddress(toEmail) };
 			msg.setRecipients(Message.RecipientType.TO, address);
-			msg.setSubject(setEmailSubject(type));
+			msg.setSubject(subject);
 			msg.setSentDate(new Date());
-			msg.setContent(setEmailContent(type), "text/html;charset=utf-8");
+			msg.setContent(content, "text/html;charset=utf-8");
 
 			// 发送邮件
 			Transport.send(msg);
+			System.out.println("--发送邮件成功--");
 		}
 		catch (MessagingException mex)
 		{
+			System.out.println("--发送邮件失败--");
 			mex.printStackTrace();
 		}
-	}
-	
-	private static String setEmailSubject(String type)
-	{
-		switch (type)
-		{
-		case "reset-loginname":
-			return "深圳市职业能力专家库-重置用户名";
-
-		case "reset-password":
-			return "深圳市职业能力专家库-重置密码";
-		}
-		
-		return null;
-	}
-	private static String setEmailContent(String type)
-	{
-		switch (type)
-		{
-		case "reset-loginname":
-			return "深圳市职业能力专家库-重置用户名";
-			
-		case "reset-password":
-			return "深圳市职业能力专家库-重置密码";
-		}
-		
-		return null;
 	}
 }

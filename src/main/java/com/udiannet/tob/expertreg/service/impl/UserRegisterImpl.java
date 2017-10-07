@@ -15,13 +15,13 @@ public class UserRegisterImpl implements UserRegister
 	private SqlSession sqlSession = SessionFactoryManager.openSession();
 
 	/**
-	 * 根据用户登录名，查询记录
+	 * 根据用户登录名或者 email，查询记录
 	 */
 	@Override
-	public User findUserByLoginName(String loginname)
+	public User findUserByLoginnameOrEmail(String loginname, String email)
 	{
 		UserMapper mapper = sqlSession.getMapper(UserMapper.class);
-		User user = (User) mapper.findUserByLoginName(loginname);
+		User user = (User) mapper.findUserByLoginnameOrEmail(loginname, email);
 //		sqlSession.close();
 		return user;
 	}
@@ -38,5 +38,4 @@ public class UserRegisterImpl implements UserRegister
 //		sqlSession.close();
 		return resule;
 	}
-
 }
