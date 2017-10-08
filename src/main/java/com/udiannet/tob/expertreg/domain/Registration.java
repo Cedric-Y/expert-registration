@@ -11,7 +11,7 @@ public class Registration
 		1	reg_id (记录ID)		int
 		2	reg_u_id (登录记录ID)		int
 		3	reg_name (姓名)		varchar(50)
-		4	reg_u_idcard (身份证)		varchar(30)
+		4	reg_idcard (身份证)		varchar(30)
 		5	reg_birthday (出生日期：可根据身份证读出)		date
 		6	reg_phone (联系电话)		varchar(50)
 		7	reg_photo (一寸照：存放路径)		varchar(200)
@@ -59,16 +59,211 @@ public class Registration
 	private Date reg_update_time;
 	private int reg_record_status;
 	
+	public int getReg_id()
+	{
+		return reg_id;
+	}
+	public void setReg_id(int reg_id)
+	{
+		this.reg_id = reg_id;
+	}
+	public int getReg_u_id()
+	{
+		return reg_u_id;
+	}
+	public void setReg_u_id(int reg_u_id)
+	{
+		this.reg_u_id = reg_u_id;
+	}
+	public String getReg_name()
+	{
+		return reg_name;
+	}
+	public void setReg_name(String reg_name)
+	{
+		this.reg_name = reg_name;
+	}
+	public String getReg_idcard()
+	{
+		return reg_idcard;
+	}
+	public void setReg_idcard(String reg_idcard)
+	{
+		this.reg_idcard = reg_idcard;
+	}
+	public Date getReg_birthday()
+	{
+		return reg_birthday;
+	}
+	public void setReg_birthday(Date reg_birthday)
+	{
+		this.reg_birthday = reg_birthday;
+	}
+	public String getReg_phone()
+	{
+		return reg_phone;
+	}
+	public void setReg_phone(String reg_phone)
+	{
+		this.reg_phone = reg_phone;
+	}
+	public String getReg_photo()
+	{
+		return reg_photo;
+	}
+	public void setReg_photo(String reg_photo)
+	{
+		this.reg_photo = reg_photo;
+	}
+	public String getReg_education()
+	{
+		return reg_education;
+	}
+	public void setReg_education(String reg_education)
+	{
+		this.reg_education = reg_education;
+	}
+	public String getReg_college()
+	{
+		return reg_college;
+	}
+	public void setReg_college(String reg_college)
+	{
+		this.reg_college = reg_college;
+	}
+	public String getReg_profession_kind()
+	{
+		return reg_profession_kind;
+	}
+	public void setReg_profession_kind(String reg_profession_kind)
+	{
+		this.reg_profession_kind = reg_profession_kind;
+	}
+	public String getReg_profession()
+	{
+		return reg_profession;
+	}
+	public void setReg_profession(String reg_profession)
+	{
+		this.reg_profession = reg_profession;
+	}
+	public String getReg_company()
+	{
+		return reg_company;
+	}
+	public void setReg_company(String reg_company)
+	{
+		this.reg_company = reg_company;
+	}
+	public String getReg_company_address()
+	{
+		return reg_company_address;
+	}
+	public void setReg_company_address(String reg_company_address)
+	{
+		this.reg_company_address = reg_company_address;
+	}
+	public String getReg_email()
+	{
+		return reg_email;
+	}
+	public void setReg_email(String reg_email)
+	{
+		this.reg_email = reg_email;
+	}
+	public String getReg_resume()
+	{
+		return reg_resume;
+	}
+	public void setReg_resume(String reg_resume)
+	{
+		this.reg_resume = reg_resume;
+	}
+	public String getReg_code()
+	{
+		return reg_code;
+	}
+	public void setReg_code(String reg_code)
+	{
+		this.reg_code = reg_code;
+	}
+	public Date getReg_hiring_start()
+	{
+		return reg_hiring_start;
+	}
+	public void setReg_hiring_start(Date reg_hiring_start)
+	{
+		this.reg_hiring_start = reg_hiring_start;
+	}
+	public int getReg_hiring_time()
+	{
+		return reg_hiring_time;
+	}
+	public void setReg_hiring_time(int reg_hiring_time)
+	{
+		this.reg_hiring_time = reg_hiring_time;
+	}
+	public int getReg_status()
+	{
+		return reg_status;
+	}
+	public void setReg_status(int reg_status)
+	{
+		this.reg_status = reg_status;
+	}
+	public String getReg_fail_reason()
+	{
+		return reg_fail_reason;
+	}
+	public void setReg_fail_reason(String reg_fail_reason)
+	{
+		this.reg_fail_reason = reg_fail_reason;
+	}
+	public String getReg_remarks()
+	{
+		return reg_remarks;
+	}
+	public void setReg_remarks(String reg_remarks)
+	{
+		this.reg_remarks = reg_remarks;
+	}
+	public Date getReg_create_time()
+	{
+		return reg_create_time;
+	}
+	public void setReg_create_time(Date reg_create_time)
+	{
+		this.reg_create_time = reg_create_time;
+	}
+	public Date getReg_update_time()
+	{
+		return reg_update_time;
+	}
+	public void setReg_update_time(Date reg_update_time)
+	{
+		this.reg_update_time = reg_update_time;
+	}
+	public int getReg_record_status()
+	{
+		return reg_record_status;
+	}
+	public void setReg_record_status(int reg_record_status)
+	{
+		this.reg_record_status = reg_record_status;
+	}
+	
 	@Override
 	public String toString()
 	{
-		return "Registration [reg_id=" + reg_id + ", reg_u_id=" + reg_u_id + ", reg_name=" + reg_name + ", reg_idcard=" + reg_idcard
-				+ ", reg_birthday=" + reg_birthday + ", reg_phone=" + reg_phone + ", reg_photo=" + reg_photo + ", reg_education="
-				+ reg_education + ", reg_college=" + reg_college + ", reg_profession_kind=" + reg_profession_kind + ", reg_profession="
-				+ reg_profession + ", reg_company=" + reg_company + ", reg_company_address=" + reg_company_address + ", reg_email="
-				+ reg_email + ", reg_resume=" + reg_resume + ", reg_code=" + reg_code + ", reg_hiring_start=" + reg_hiring_start
-				+ ", reg_hiring_time=" + reg_hiring_time + ", reg_status=" + reg_status + ", reg_fail_reason=" + reg_fail_reason
-				+ ", reg_remarks=" + reg_remarks + ", reg_create_time=" + reg_create_time + ", reg_update_time=" + reg_update_time
-				+ ", reg_record_status=" + reg_record_status + "]";
+		return "Registration [reg_id=" + reg_id + ", reg_u_id=" + reg_u_id + ", reg_name=" + reg_name + ", reg_idcard="
+				+ reg_idcard + ", reg_birthday=" + reg_birthday + ", reg_phone=" + reg_phone + ", reg_photo="
+				+ reg_photo + ", reg_education=" + reg_education + ", reg_college=" + reg_college
+				+ ", reg_profession_kind=" + reg_profession_kind + ", reg_profession=" + reg_profession
+				+ ", reg_company=" + reg_company + ", reg_company_address=" + reg_company_address + ", reg_email="
+				+ reg_email + ", reg_resume=" + reg_resume + ", reg_code=" + reg_code + ", reg_hiring_start="
+				+ reg_hiring_start + ", reg_hiring_time=" + reg_hiring_time + ", reg_status=" + reg_status
+				+ ", reg_fail_reason=" + reg_fail_reason + ", reg_remarks=" + reg_remarks + ", reg_create_time="
+				+ reg_create_time + ", reg_update_time=" + reg_update_time + ", reg_record_status=" + reg_record_status
+				+ "]";
 	}
 }

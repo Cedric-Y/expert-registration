@@ -7,7 +7,8 @@
 <title>用户资料</title>
 </head>
 <body>
+	<h3>用户资料</h3>
 	<hr/>
-	<a href="${pageContext.request.contextPath}/controller/UserInfoServlet?method=userInfoEdit">编辑</a>
+	<a href="${pageContext.request.contextPath}/controller/UserInfoServlet?method=userInfoEditForm">编辑</a>
 </body>
 </html>

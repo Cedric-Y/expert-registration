@@ -4,6 +4,7 @@ import org.apache.ibatis.session.SqlSession;
 
 import com.udiannet.tob.expertreg.dao.UserLoginDao;
 import com.udiannet.tob.expertreg.domain.User;
+import com.udiannet.tob.expertreg.service.impl.SessionFactoryManager;
 
 /**
  * 负责用户登录的 DAO 层实现类

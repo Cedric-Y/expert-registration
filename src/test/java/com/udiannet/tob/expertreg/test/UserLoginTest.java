@@ -9,9 +9,9 @@ import java.util.UUID;
 import org.apache.ibatis.session.SqlSession;
 import org.junit.Test;
 
-import com.udiannet.tob.expertreg.dao.impl.SessionFactoryManager;
 import com.udiannet.tob.expertreg.domain.User;
 import com.udiannet.tob.expertreg.mapper.UserMapper;
+import com.udiannet.tob.expertreg.service.impl.SessionFactoryManager;
 import com.udiannet.tob.expertreg.util.SendEmail;
 import com.udiannet.tob.expertreg.util.TokenProccessor;
 

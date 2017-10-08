@@ -8,7 +8,7 @@
 </head>
 <body>
 	<h6><%=session.getAttribute("msg")%></h6>
-	<form action="${pageContext.request.contextPath}/controller/UserInfoServlet?method=userInfoEditSubmib" method="post">
+	<form action="${pageContext.request.contextPath}/UserInfo?method=userInfoEditSubmit" method="post">
 		<table>
 			<tbody>
 				<tr>
@@ -30,30 +30,181 @@
 					</td>
 				</tr>
 				<tr>
-					<td>密码：</td>
+					<td>电话：</td>
 					<td>
-						<input name="password1" type="password" />
+						<input name="phone" type="text" />
 					</td>
 					<td>
-						（至少是由字母和数字组成，且3到15位）
-					</td>
-				</tr>
-				<tr>
-					<td>确认密码：</td>
-					<td>
-						<input name="password2" type="password" />
-						（至少是由字母和数字组成，且3到15位）
+						（必填）
 					</td>
 				</tr>
 				<tr>
-					<td colspan="2">
+					<td>一寸照：</td>
+					<td>
+						<input name="photo" type="text" />
+					</td>
+					<td>
+					</td>
+				</tr>
+				<tr>
+					<td>最高学历：</td>
+					<td>
+						<input name="education" type="text" />
+					</td>
+					<td>
+						（必填）
+					</td>
+				</tr>
+				<tr>
+					<td>毕业院校：</td>
+					<td>
+						<input name="college" type="text" />
+					</td>
+					<td>
+					</td>
+				</tr>
+				<tr>
+					<td>从事行业类型：</td>
+					<td>
+						<input name="profession_kind" type="text" />
+					</td>
+					<td>
+						（必填）
+					</td>
+				</tr>
+				<tr>
+					<td>从事行业：</td>
+					<td>
+						<input name="profession" type="text" />
+					</td>
+					<td>
+						（必填）
+					</td>
+				</tr>
+				<tr>
+					<td>工作单位：</td>
+					<td>
+						<input name="company" type="text" />
+					</td>
+					<td>
+					</td>
+				</tr>
+				<tr>
+					<td>单位地址：</td>
+					<td>
+						<input name="company_address" type="text" />
+					</td>
+					<td>
+					</td>
+				</tr>
+				<tr>
+					<td>工作电子邮箱：</td>
+					<td>
+						<input name="email" type="text" />
+					</td>
+					<td>
+						（必填）
+					</td>
+				</tr>
+				<tr>
+					<td>个人简历：</td>
+					<td>
+						<input name="resume" type="text" />
+					</td>
+					<td>
+						（必填）
+					</td>
+				</tr>
+				<tr>
+					<td colspan="3">
 						<input type="hidden" name="token" value="<%=session.getAttribute("token")%>" />
+						<input type="hidden" name="id" value="<%=session.getAttribute("reg_id")%>" />
 						<input type="hidden" name="u_id" value="<%=session.getAttribute("u_id")%>" />
-						<input type="submit" value="确定" />
 					</td>
 				</tr>
 			</tbody>
 		</table>
+		
+		<table>
+			<tbody>
+				<tr>
+					<td>
+						<table>
+							<thead>
+								<tr>
+									<th colspan="2">职称证书1</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td>职称证书名称</td>
+									<td>
+										<input name="job_title_name1" type="text" />
+									</td>
+								</tr>
+								<tr>
+									<td>职称证书级别</td>
+									<td>
+										<input name="job_title_level1" type="text" />
+									</td>
+								</tr>
+								<tr>
+									<td>获取证书时间</td>
+									<td>
+										<input name="job_title_date1" type="text" />
+									</td>
+								</tr>
+								<tr>
+									<td>发证机构</td>
+									<td>
+										<input name="job_title_organization1" type="text" />
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</td>
+					<td>
+						<table>
+							<thead>
+								<tr>
+									<th colspan="2">职称证书2</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td>职称证书名称</td>
+									<td>
+										<input name="job_title_name2" type="text" />
+									</td>
+								</tr>
+								<tr>
+									<td>职称证书级别</td>
+									<td>
+										<input name="job_title_level2" type="text" />
+									</td>
+								</tr>
+								<tr>
+									<td>获取证书时间</td>
+									<td>
+										<input name="job_title_date2" type="text" />
+									</td>
+								</tr>
+								<tr>
+									<td>发证机构</td>
+									<td>
+										<input name="job_title_organization2" type="text" />
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</td>					
+				</tr>
+			</tbody>
+		</table>
+		<input type="submit" value="确定" />
 	</form>
+	<hr/>
+	<a href="${pageContext.request.contextPath}/UserInfo?method=userInfoForm">个人信息</a>
+	<a href="${pageContext.request.contextPath}/UserInfo?method=userLogin">退出登录</a>
 </body>
 </html>

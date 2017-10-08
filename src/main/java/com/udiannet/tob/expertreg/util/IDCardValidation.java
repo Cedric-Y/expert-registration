@@ -20,10 +20,26 @@ public class IDCardValidation
 	private final static int[] VERIFY_CODE_WEIGHT =
 	{ 7, 9, 10, 5, 8, 4, 2, 1, 6, 3, 7, 9, 10, 5, 8, 4, 2 };// 18位身份证中，各个数字的生成校验码时的权值
 
+
+	/**
+	 * 只接受18位的身份证号码
+	 */
+	public IDCardValidation(String cardNumber)
+	{
+		if (null != cardNumber)
+		{
+			cardNumber = cardNumber.trim();
+//			if (OLD_CARD_NUMBER_LENGTH == cardNumber.length())
+//			{
+//				cardNumber = contertToNewCardNumber(cardNumber);
+//			}
+		}
+		this.cardNumber = cardNumber;
+	}
+	
 	/**
 	 * false错误，true正确
 	 */
-
 	public boolean validate()
 	{
 		if (null == cacheValidateResult)
@@ -61,25 +77,6 @@ public class IDCardValidation
 			// 完整身份证号码的省市县区检验规则
 		}
 		return cacheValidateResult;
-	}
-
-	/**
-	 * 如果是15位身份证号码，则自动转换为18位
-	 *
-	 * @param cardNumber
-	 * @return
-	 */
-	public IDCardValidation(String cardNumber)
-	{
-		if (null != cardNumber)
-		{
-			cardNumber = cardNumber.trim();
-//			if (OLD_CARD_NUMBER_LENGTH == cardNumber.length())
-//			{
-//				cardNumber = contertToNewCardNumber(cardNumber);
-//			}
-		}
-		this.cardNumber = cardNumber;
 	}
 
 	public String getCardNumber()
@@ -158,7 +155,7 @@ public class IDCardValidation
 	 * Y: 0 1 2 3 4 5 6 7 8 9 10
 	 * 校验码: 1 0 X 9 8 7 6 5 4 3 2
 	 */
-	private static char calculateVerifyCode(CharSequence cardNumber)
+	private char calculateVerifyCode(CharSequence cardNumber)
 	{
 		int sum = 0;
 		for (int i = 0; i < NEW_CARD_NUMBER_LENGTH - 1; i++)

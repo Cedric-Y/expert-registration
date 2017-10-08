@@ -1,4 +1,4 @@
-package com.udiannet.tob.expertreg.dao.impl;
+package com.udiannet.tob.expertreg.service.impl;
 
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;

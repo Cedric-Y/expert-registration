@@ -22,8 +22,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.apache.ibatis.javassist.expr.NewArray;
-
 import com.google.gson.GsonBuilder;
 import com.udiannet.tob.expertreg.domain.Registration;
 import com.udiannet.tob.expertreg.domain.User;
@@ -103,37 +101,7 @@ public class UserLoginServlet extends HttpServlet
 			System.out.println("你调用的方法 【" + c.getName() + "." + reqMethod + "】,内部发生了异常");
 			throw new RuntimeException(e);
 		}
-	}
-
-	/**
-	 * token 检查校验
-	 */
-	private boolean checkToken(HttpServletRequest request)
-	{
-		String reqToken = request.getParameter("token");
-
-		System.out.println("request-token: " + reqToken);
-		// 1、如果用户提交的表单数据中没有 token，则用户是重复提交了表单
-		if (reqToken == null)
-		{
-			return false;
-		}
-
-		// 取出存储在 Session 中的 token
-		String sessionToken = (String) request.getSession().getAttribute("token");
-		// 2、如果当前用户的 Session 中不存在 token，则用户是重复提交了表单
-		if (sessionToken == null)
-		{
-			return false;
-		}
-		// 3、存储在 Session 中的 token 与表单提交的 token 不同，则用户是重复提交了表单
-		if (!reqToken.equals(sessionToken))
-		{
-			return false;
-		}
-
-		return true;
-	}
+	}	
 
 	/**
 	 * 获得随机生成的颜色，为验证码服务
@@ -290,7 +258,7 @@ public class UserLoginServlet extends HttpServlet
 		System.out.println("session-token: " + session.getAttribute("token"));
 		session.setAttribute("method", "userLoginForm"); // 记录当前 method
 		// 创建 token，并把 token 存进 session 传递过去
-		String token = TokenProccessor.getInstance().makeToken();
+		String token = TokenProccessor.makeToken();
 		System.out.println("loginForm-token: " + token);
 		session.setAttribute("token", token);
 		// 跳转到登录页面
@@ -307,7 +275,7 @@ public class UserLoginServlet extends HttpServlet
 		System.out.println("session-method: " + session.getAttribute("method"));
 		System.out.println("session-token: " + session.getAttribute("token"));
 		// 是否重复提交
-		if (!checkToken(request))
+		if (!TokenProccessor.checkToken(request))
 		{
 			System.out.println("重复提交了。");
 			// session 超时后，要回到登录页面
@@ -324,7 +292,7 @@ public class UserLoginServlet extends HttpServlet
 		session.setAttribute("method", "userLoginSubmit"); // 记录当前 method
 
 //		String token = ;
-		session.setAttribute("token", TokenProccessor.getInstance().makeToken()); // 更新 token
+		session.setAttribute("token", TokenProccessor.makeToken()); // 更新 token
 
 		// Writer out = response.getWriter();
 
@@ -386,9 +354,11 @@ public class UserLoginServlet extends HttpServlet
 				// 登录成功后，更新其后台的登录时间
 				int result = userLoginService.updateUserLoginTime(user);
 				System.out.println("用户登录成功：" + result);
+				// 把“u_id”传递过去
+				session.setAttribute("u_id", user.getU_id());
 
 				// 用户是否已经填写了专家资料表了
-				Registration reg = expRegService.findRegistrationByUserLogin(user);
+				Registration reg = expRegService.findRegistrationByUserId(user.getU_id());
 				if (reg != null) // 用户已经填写过专家资料了，转向显示审核状态页面
 				{
 					Writer out = response.getWriter();
@@ -399,8 +369,6 @@ public class UserLoginServlet extends HttpServlet
 				}
 				else // 用户还没填写过专家资料，转向填写资料页面
 				{
-					// 把“u_id”传递过去
-					session.setAttribute("u_id", user.getU_id());
 					request.getRequestDispatcher("/userinfoedit.jsp").forward(request, response);
 				}
 			}
@@ -439,7 +407,7 @@ public class UserLoginServlet extends HttpServlet
 		session.setAttribute("method", "userRegForm"); // 记录当前 method
 
 		// 创建 token，并把 token 存进 session 传递过去
-		session.setAttribute("token", TokenProccessor.getInstance().makeToken());
+		session.setAttribute("token", TokenProccessor.makeToken());
 		// 跳转到新用户注册页面
 		request.getRequestDispatcher("/userreg.jsp").forward(request, response);
 	}
@@ -454,7 +422,7 @@ public class UserLoginServlet extends HttpServlet
 		System.out.println("session-method: " + session.getAttribute("method"));
 		System.out.println("session-token: " + session.getAttribute("token"));
 		// 是否重复提交
-		if (!checkToken(request))
+		if (!TokenProccessor.checkToken(request))
 		{
 			System.out.println("重复提交了。");
 			// session 超时后，要回到登录页面
@@ -469,7 +437,7 @@ public class UserLoginServlet extends HttpServlet
 		session.setAttribute("method", "userRegSubmit"); // 记录当前 method
 
 //		String token = ;
-		session.setAttribute("token", TokenProccessor.getInstance().makeToken()); // 更新 token
+		session.setAttribute("token", TokenProccessor.makeToken()); // 更新 token
 
 		// Writer out = response.getWriter();
 
@@ -648,7 +616,7 @@ public class UserLoginServlet extends HttpServlet
 		session.setAttribute("reset", request.getParameter("reset"));
 
 		// 创建 token，并把 token 存进 session 传递过去
-		session.setAttribute("token", TokenProccessor.getInstance().makeToken());
+		session.setAttribute("token", TokenProccessor.makeToken());
 		// 跳转到新用户注册页面
 		request.getRequestDispatcher("/useremail.jsp").forward(request, response);
 	}
@@ -663,7 +631,7 @@ public class UserLoginServlet extends HttpServlet
 		System.out.println("session-method: " + session.getAttribute("method"));
 		System.out.println("session-token: " + session.getAttribute("token"));
 		// 是否重复提交
-		if (!checkToken(request))
+		if (!TokenProccessor.checkToken(request))
 		{
 			System.out.println("重复提交了。");
 			// session 超时后，要回到登录页面
@@ -676,7 +644,7 @@ public class UserLoginServlet extends HttpServlet
 		session.setAttribute("method", "userSendEmail"); // 记录当前 method
 
 //		String token = ;
-		session.setAttribute("token", TokenProccessor.getInstance().makeToken()); // 更新 token
+		session.setAttribute("token", TokenProccessor.makeToken()); // 更新 token
 
 		// Writer out = response.getWriter();
 
@@ -789,16 +757,25 @@ public class UserLoginServlet extends HttpServlet
 		if (result > 0)
 		{
 			System.out.println("更新用户数据成功：" + result);
-			msg = "邮件发送成功！请登录邮箱完成验证操作。";
-			session.setAttribute("msg", msg);
-			request.getRequestDispatcher("/useremail.jsp").forward(request, response);
+//			msg = "邮件发送成功！请登录邮箱完成验证操作。";
+//			session.setAttribute("msg", msg);
+//			request.getRequestDispatcher("/useremail.jsp").forward(request, response);
+			
+			Writer out = response.getWriter();
+			out.write("邮件发送成功！请登录邮箱完成验证操作。");
+//			request.getRequestDispatcher("/userlogin.jsp").forward(request, response);
+			out.close();
 		}
 		else
 		{
 			System.out.println("更新用户数据失败：" + result);
-			msg = "后台数据更新失败，请稍后重试。";
-			session.setAttribute("msg", msg);
-			request.getRequestDispatcher("/useremail.jsp").forward(request, response);
+//			msg = "后台数据更新失败，请稍后重试。";
+//			session.setAttribute("msg", msg);
+//			request.getRequestDispatcher("/useremail.jsp").forward(request, response);
+			
+			Writer out = response.getWriter();
+			out.write("服务器异常，请稍后重试。");
+			out.close();
 		}
 	}
 
@@ -875,7 +852,7 @@ public class UserLoginServlet extends HttpServlet
 		}
 
 		// 创建 token，并把 token 存进 session 传递过去
-		session.setAttribute("token", TokenProccessor.getInstance().makeToken());
+		session.setAttribute("token", TokenProccessor.makeToken());
 		// 保存将要重置用户名的记录 id
 		session.setAttribute("u_id", u_id);
 		switch (reset)
@@ -901,7 +878,7 @@ public class UserLoginServlet extends HttpServlet
 		System.out.println("session-method: " + session.getAttribute("method"));
 		System.out.println("session-token: " + session.getAttribute("token"));
 		// 是否重复提交
-		if (!checkToken(request))
+		if (!TokenProccessor.checkToken(request))
 		{
 			System.out.println("重复提交了。");
 			// session 超时后，要回到登录页面
@@ -911,7 +888,7 @@ public class UserLoginServlet extends HttpServlet
 			else
 			{
 				session.setAttribute("method", "userResetLoginnameSubmit"); // 记录当前 method
-				session.setAttribute("token", TokenProccessor.getInstance().makeToken()); // 更新 token
+				session.setAttribute("token", TokenProccessor.makeToken()); // 更新 token
 				request.getRequestDispatcher("/userresetloginname.jsp").forward(request, response);
 			}
 			return;
@@ -920,7 +897,7 @@ public class UserLoginServlet extends HttpServlet
 		session.setAttribute("method", "userResetLoginnameSubmit"); // 记录当前 method
 
 //		String token = ;
-		session.setAttribute("token", TokenProccessor.getInstance().makeToken()); // 更新 token
+		session.setAttribute("token", TokenProccessor.makeToken()); // 更新 token
 
 		// Writer out = response.getWriter();
 
@@ -1026,7 +1003,7 @@ public class UserLoginServlet extends HttpServlet
 		System.out.println("session-method: " + session.getAttribute("method"));
 		System.out.println("session-token: " + session.getAttribute("token"));
 		// 是否重复提交
-		if (!checkToken(request))
+		if (!TokenProccessor.checkToken(request))
 		{
 			System.out.println("重复提交了。");
 			// session 超时后，要回到登录页面
@@ -1036,7 +1013,7 @@ public class UserLoginServlet extends HttpServlet
 			else
 			{
 				session.setAttribute("method", "userResetPasswordSubmit"); // 记录当前 method
-				session.setAttribute("token", TokenProccessor.getInstance().makeToken()); // 更新 token
+				session.setAttribute("token", TokenProccessor.makeToken()); // 更新 token
 				request.getRequestDispatcher("/userresetpassword.jsp").forward(request, response);
 			}
 			return;
@@ -1045,7 +1022,7 @@ public class UserLoginServlet extends HttpServlet
 		session.setAttribute("method", "userResetPasswordSubmit"); // 记录当前 method
 
 //		String token = ;
-		session.setAttribute("token", TokenProccessor.getInstance().makeToken()); // 更新 token
+		session.setAttribute("token", TokenProccessor.makeToken()); // 更新 token
 
 		// Writer out = response.getWriter();
 

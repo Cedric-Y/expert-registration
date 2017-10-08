@@ -2,7 +2,6 @@ package com.udiannet.tob.expertreg.service.impl;
 
 import org.apache.ibatis.session.SqlSession;
 
-import com.udiannet.tob.expertreg.dao.impl.SessionFactoryManager;
 import com.udiannet.tob.expertreg.domain.User;
 import com.udiannet.tob.expertreg.mapper.UserMapper;
 import com.udiannet.tob.expertreg.service.UserRegister;

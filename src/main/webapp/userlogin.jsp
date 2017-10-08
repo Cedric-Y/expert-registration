@@ -50,10 +50,9 @@
 					</td>
 				</tr>
 			</tbody>
-		</table>
-
-		<hr />
-		<a href="${pageContext.request.contextPath}/UserLogin?method=userRegForm">注册</a>
+		</table>		
 	</form>
+	<hr />
+	<a href="${pageContext.request.contextPath}/UserLogin?method=userRegForm">注册</a>
 </body>
 </html>
