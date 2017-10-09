@@ -4,7 +4,9 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import com.udiannet.tob.expertreg.domain.Registration;
-
+/**
+ * 专家注册
+ */
 @Mapper
 public interface RegistrationMapper
 {

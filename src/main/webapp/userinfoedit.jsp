@@ -152,6 +152,7 @@
 									<td>获取证书时间</td>
 									<td>
 										<input name="job_title_date1" type="text" />
+										（2017-01-01）
 									</td>
 								</tr>
 								<tr>
@@ -187,6 +188,7 @@
 									<td>获取证书时间</td>
 									<td>
 										<input name="job_title_date2" type="text" />
+										（2017-01-01）
 									</td>
 								</tr>
 								<tr>

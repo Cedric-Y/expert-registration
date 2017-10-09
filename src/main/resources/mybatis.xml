@@ -20,12 +20,10 @@
 			<!-- 配置数据库连接信息 -->
 			<dataSource type="POOLED">
 				<property name="driver" value="com.microsoft.sqlserver.jdbc.SQLServerDriver" />
-				<!--
 				<property name="url"
 					value="jdbc:sqlserver://192.168.1.167;instanceName=SQLSERVER2012;databaseName=db_expert" />				
-				-->
-				<property name="url"
-					value="jdbc:sqlserver://qc-home;instanceName=SQL2012;databaseName=db_expert" />	
+				<!-- <property name="url"
+					value="jdbc:sqlserver://qc-home;instanceName=SQL2012;databaseName=db_expert" />	 -->
 				<property name="username" value="sa" />
 				<property name="password" value="qiuchmetal" />			
 			</dataSource>

@@ -4,7 +4,11 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import com.udiannet.tob.expertreg.domain.User;
-
+/**
+ * 用户登录相关
+ * @author qc
+ *
+ */
 @Mapper
 public interface UserMapper
 {

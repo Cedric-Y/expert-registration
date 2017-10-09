@@ -1,16 +1,19 @@
 package com.udiannet.tob.expertreg.service;
 
+import java.util.List;
+
 import com.udiannet.tob.expertreg.domain.Registration;
+import com.udiannet.tob.expertreg.domain.RegistrationJobTitle;
 
 /**
- * 专家注册
+ * 专家资料相关业务接口
  */
 public interface ExpertRegistration
 {
 	/**
 	 * 根据专家输入的信息，进行新增或者更新
 	 */
-	void registration(Registration registration);
+	int registration(Registration registration, List<RegistrationJobTitle> jobTitleList);
 	/**
 	 * 根据登录用户的id，显示注册信息
 	 */
