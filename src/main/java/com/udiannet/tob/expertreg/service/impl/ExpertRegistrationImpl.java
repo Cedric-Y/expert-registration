@@ -25,46 +25,48 @@ public class ExpertRegistrationImpl implements ExpertRegistration
 	{
 		RegistrationMapper regMapper = sqlSession.getMapper(RegistrationMapper.class);
 		RegistrationJobTitleMapper jobTitleMapper = sqlSession.getMapper(RegistrationJobTitleMapper.class);
-		
+
 		Registration reg = regMapper.findRegistrationByUserId(registration.getReg_u_id());
 		int result = 0;
 		// 先查看此登录用户是否已经建立了资料库
 		// 还没有建立资料库，需要进行新增操作
 		if (reg == null)
 		{
-			//1 先增加专家注册库的记录，然后获取新增后的记录ID
-			int reg_id = regMapper.insertRegistration(registration);
-			sqlSession.commit();
-			//2 循环增加专家注册-职称记录
-			for(int i=0;i<jobTitleList.size();i++)
+			// 1 先增加专家注册库的记录，然后获取新增后的记录ID
+			regMapper.insertRegistration(registration);
+			sqlSession.commit(true);
+			int reg_id = registration.getReg_id();
+			System.out.println("新增专家注册返回ID：" + reg_id);
+			// 2 循环增加专家注册-职称记录
+			for (int i = 0; i < jobTitleList.size(); i++)
 			{
 				RegistrationJobTitle regJobTitle = jobTitleList.get(i);
 				regJobTitle.setRjt_reg_id(reg_id);
 				jobTitleMapper.insertRegJobTitle(regJobTitle);
 			}
-			sqlSession.commit();
-			
+			sqlSession.commit(true);
+
 			result = reg_id;
 		}
 		// 已经建立了资料库，需要进行更新操作
 		else
 		{
-			//1 更新专家注册的记录
+			// 1 更新专家注册的记录
 			registration.setReg_id(reg.getReg_id());
 			result = regMapper.updateRegistration(registration);
-			
-			//2 删除专家注册-职称记录
+
+			// 2 删除专家注册-职称记录
 			jobTitleMapper.deleteRegJobTitleByRegId(reg.getReg_id());
-			
-			//3 重新增加专家注册-职称记录
-			for(int i=0;i<jobTitleList.size();i++)
+
+			// 3 重新增加专家注册-职称记录
+			for (int i = 0; i < jobTitleList.size(); i++)
 			{
 				RegistrationJobTitle regJobTitle = jobTitleList.get(i);
 				regJobTitle.setRjt_reg_id(reg.getReg_id());
 				jobTitleMapper.insertRegJobTitle(regJobTitle);
 			}
-			
-			sqlSession.commit();
+
+			sqlSession.commit(true);
 		}
 		return result;
 	}

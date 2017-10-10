@@ -1,5 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.udiannet.tob.expertreg.mapper.RegistrationJobTitleMapper">
-	<select id="" ></select>
+	<!-- 新增专家职称记录 -->
+	<insert id="insertRegJobTitle" parameterType="RegistrationJobTitle">
+		INSERT INTO [tbl_registration_job_title]
+           ([rjt_reg_id]
+           ,[rjt_name]
+           ,[rjt_level]
+           ,[rjt_date]
+           ,[rjt_organization])
+     	VALUES
+           (#{RegistrationJobTitle.rjt_reg_id}
+           ,#{RegistrationJobTitle.rjt_name}
+           ,#{RegistrationJobTitle.rjt_level}
+           ,#{RegistrationJobTitle.rjt_date,jdbcType=DATE}
+           ,#{RegistrationJobTitle.rjt_organization})
+	</insert>
+	<!-- 删除专家职称记录 -->
+	<delete id="deleteRegJobTitleByRegId" parameterType="int">
+		DELETE FROM [tbl_registration_job_title]
+		WHERE [rjt_reg_id]=#{reg_id}
+	</delete>
 </mapper>

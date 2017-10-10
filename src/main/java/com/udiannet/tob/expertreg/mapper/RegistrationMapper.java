@@ -10,9 +10,16 @@ import com.udiannet.tob.expertreg.domain.Registration;
 @Mapper
 public interface RegistrationMapper
 {
-	Registration getRegistrationById(int reg_id);
 	/**
 	 * 根据登录用户 id，查询对应的专家资料
 	 */
 	Registration findRegistrationByUserId(@Param("u_id") int u_id);
+	/**
+	 * 新增专家注册个人资料记录
+	 */
+	int insertRegistration(@Param("Registration") Registration registration);
+	/**
+	 * 更新专家注册个人资料记录
+	 */
+	int updateRegistration(@Param("Registration") Registration registration);
 }

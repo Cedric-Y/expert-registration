@@ -3,7 +3,6 @@ package com.udiannet.tob.expertreg.controller;
 import java.io.IOException;
 import java.io.Writer;
 import java.lang.reflect.Method;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -272,16 +271,19 @@ public class UserInfoServlet extends HttpServlet
 						request.getParameter("job_title_level" + i) == null ? "" : request.getParameter("job_title_level" + i).trim());
 				try
 				{
+					System.out.println("["+request.getParameter("job_title_date" + i)+"]");
 					rjt.setRjt_date(request.getParameter("job_title_date" + i) == null ? null
-							: (new SimpleDateFormat("yyyy-MM-dd ").parse(request.getParameter("job_title_date" + i))));
+							: (new SimpleDateFormat("yyyy-MM-dd").parse(request.getParameter("job_title_date" + i).trim())));
+					
 				}
-				catch (ParseException e)
+				catch (Exception e)
 				{
 					rjt.setRjt_date(null);
 					e.printStackTrace();
 				}
 				rjt.setRjt_organization(request.getParameter("job_title_organization" + i) == null ? ""
 						: request.getParameter("job_title_organization" + i).trim());
+				System.out.println(rjt);
 				jobTitleList.add(rjt);
 			}
 		}

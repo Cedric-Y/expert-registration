@@ -363,9 +363,9 @@ public class UserLoginServlet extends HttpServlet
 				{
 					Writer out = response.getWriter();
 					// 发送 reg 的 json 到前端
-					(new GsonBuilder().create()).toJson(reg, out);
-					out.close();
+					(new GsonBuilder().create()).toJson(reg, out);					
 					request.getRequestDispatcher("/userinfo.jsp").forward(request, response);
+					out.close();
 				}
 				else // 用户还没填写过专家资料，转向填写资料页面
 				{
