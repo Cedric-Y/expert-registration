@@ -16,31 +16,36 @@
 			,[reg_company_address],[reg_email],[reg_resume]
 			,[reg_create_time],[reg_record_status])
 		VALUES
-			(#{Registration.reg_u_id},#{Registration.reg_name},#{Registration.reg_idcard},#{Registration.reg_birthday}
+			(#{reg_u_id},#{reg_name},#{reg_idcard},#{reg_birthday}
+			,#{reg_phone},#{reg_photo},#{reg_education},#{reg_college}
+			,#{reg_profession_kind},#{reg_profession},#{reg_company}
+			,#{reg_company_address},#{reg_email},#{reg_resume}
+			,getdate(),1)
+			<!-- (#{Registration.reg_u_id},#{Registration.reg_name},#{Registration.reg_idcard},#{Registration.reg_birthday}
 			,#{Registration.reg_phone},#{Registration.reg_photo},#{Registration.reg_education},#{Registration.reg_college}
 			,#{Registration.reg_profession_kind},#{Registration.reg_profession},#{Registration.reg_company}
 			,#{Registration.reg_company_address},#{Registration.reg_email},#{Registration.reg_resume}
-			,getdate(),1)
+			,getdate(),1) -->
 	</insert>
 	<!-- 更新专家注册个人资料记录 -->
 	<update id="updateRegistration" parameterType="Registration">
 		UPDATE [dbo].[tbl_registration]
-		   SET [reg_u_id] = Registration.reg_u_id
-		      ,[reg_name] = Registration.reg_name
-		      ,[reg_idcard] = Registration.reg_idcard
-		      ,[reg_birthday] = Registration.reg_birthday
-		      ,[reg_phone] = Registration.reg_phone
-		      ,[reg_photo] = Registration.reg_photo
-		      ,[reg_education] = Registration.reg_education
-		      ,[reg_college] = Registration.reg_college
-		      ,[reg_profession_kind] = Registration.reg_profession_kind
-		      ,[reg_profession] = Registration.reg_profession
-		      ,[reg_company] = Registration.reg_company
-		      ,[reg_company_address] = Registration.reg_company_address
-		      ,[reg_email] = Registration.reg_email
-		      ,[reg_resume] = Registration.reg_resume		      
+		   SET [reg_u_id] = #{reg_u_id}
+		      ,[reg_name] = #{reg_name}
+		      ,[reg_idcard] = #{reg_idcard}
+		      ,[reg_birthday] = #{reg_birthday}
+		      ,[reg_phone] = #{reg_phone}
+		      ,[reg_photo] = #{reg_photo}
+		      ,[reg_education] = #{reg_education}
+		      ,[reg_college] = #{reg_college}
+		      ,[reg_profession_kind] = #{reg_profession_kind}
+		      ,[reg_profession] = #{reg_profession}
+		      ,[reg_company] = #{reg_company}
+		      ,[reg_company_address] = #{reg_company_address}
+		      ,[reg_email] = #{reg_email}
+		      ,[reg_resume] = #{reg_resume}		      
 		      ,[reg_update_time] = getdate()
-		 WHERE [reg_id] = #{Registration.reg_id}
+		 WHERE [reg_id] = #{reg_id}
 		 	AND [reg_record_status] = 1
 	</update>
 </mapper>  

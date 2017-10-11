@@ -17,9 +17,9 @@ public interface RegistrationMapper
 	/**
 	 * 新增专家注册个人资料记录
 	 */
-	int insertRegistration(@Param("Registration") Registration registration);
+	void insertRegistration(Registration registration);
 	/**
 	 * 更新专家注册个人资料记录
 	 */
-	int updateRegistration(@Param("Registration") Registration registration);
+	int updateRegistration(Registration registration);
 }

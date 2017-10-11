@@ -1,5 +1,7 @@
 package com.udiannet.tob.expertreg.mapper;
 
+import java.util.List;
+
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -18,6 +20,10 @@ public interface RegistrationJobTitleMapper
 	/**
 	 * 删除专家职称记录
 	 */
-	int deleteRegJobTitleByRegId(@Param("reg_id")int reg_id);
+	int deleteRegJobTitleByRegId(@Param("reg_id") int reg_id);
+	/**
+	 * 根据专家资料记录ID，查询职称信息
+	 */
+	List<RegistrationJobTitle> findJobTitleListByRegId(@Param("reg_id") int reg_id);
 
 }

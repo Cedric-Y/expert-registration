@@ -22,4 +22,8 @@ public interface ExpertRegistration
 	 * 根据登录用户 id，查询对应的专家资料
 	 */
 	Registration findRegistrationByUserId(int u_id);
+	/**
+	 * 根据专家资料记录ID，查询职称信息
+	 */
+	List<RegistrationJobTitle> findJobTitleListByRegId(int reg_id);
 }

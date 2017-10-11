@@ -8,7 +8,22 @@
 </head>
 <body>
 	<h3>用户资料</h3>
-	<hr/>
+	<hr />
+	<h5>基本资料</h5>
+	<p>
+		<%
+			out.print(request.getAttribute("reg"));
+		%>
+	</p>
+	<hr />
+	<hr />
+	<h5>职称</h5>
+	<p>
+		<%
+			out.print(request.getAttribute("jobtitles"));
+		%>
+	</p>
+	<hr />
 	<a href="${pageContext.request.contextPath}/controller/UserInfoServlet?method=userInfoEditForm">编辑</a>
 </body>
 </html>

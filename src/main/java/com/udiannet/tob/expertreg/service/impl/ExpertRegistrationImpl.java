@@ -34,7 +34,7 @@ public class ExpertRegistrationImpl implements ExpertRegistration
 		{
 			// 1 先增加专家注册库的记录，然后获取新增后的记录ID
 			regMapper.insertRegistration(registration);
-			sqlSession.commit(true);
+			sqlSession.commit();
 			int reg_id = registration.getReg_id();
 			System.out.println("新增专家注册返回ID：" + reg_id);
 			// 2 循环增加专家注册-职称记录
@@ -44,7 +44,7 @@ public class ExpertRegistrationImpl implements ExpertRegistration
 				regJobTitle.setRjt_reg_id(reg_id);
 				jobTitleMapper.insertRegJobTitle(regJobTitle);
 			}
-			sqlSession.commit(true);
+			sqlSession.commit();
 
 			result = reg_id;
 		}
@@ -66,7 +66,7 @@ public class ExpertRegistrationImpl implements ExpertRegistration
 				jobTitleMapper.insertRegJobTitle(regJobTitle);
 			}
 
-			sqlSession.commit(true);
+			sqlSession.commit();
 		}
 		return result;
 	}
@@ -87,6 +87,16 @@ public class ExpertRegistrationImpl implements ExpertRegistration
 		RegistrationMapper mapper = sqlSession.getMapper(RegistrationMapper.class);
 		Registration reg = (Registration) mapper.findRegistrationByUserId(u_id);
 		return reg;
+	}
+
+	/**
+	 * 根据专家资料记录ID，查询职称信息
+	 */
+	@Override
+	public List<RegistrationJobTitle> findJobTitleListByRegId(int reg_id)
+	{
+		RegistrationJobTitleMapper jobTitleMapper = sqlSession.getMapper(RegistrationJobTitleMapper.class);
+		return (List<RegistrationJobTitle>) jobTitleMapper.findJobTitleListByRegId(reg_id);
 	}
 
 }

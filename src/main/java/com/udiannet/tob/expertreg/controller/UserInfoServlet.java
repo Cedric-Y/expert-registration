@@ -118,12 +118,17 @@ public class UserInfoServlet extends HttpServlet
 		// 是否重复提交
 		if (!TokenProccessor.checkToken(request))
 		{
-			System.out.println("重复提交了。");
 			// session 超时后，要回到登录页面
 			if (session.getAttribute("method") == null)
+			{
+				System.out.println("session超时。");
 				request.getRequestDispatcher("/UserLogin?method=userLoginForm").forward(request, response);
+			}
 			else
+			{
+				System.out.println("重复提交了。");
 				userInfoEditForm(request, response);
+			}
 			return;
 		}
 
@@ -191,17 +196,20 @@ public class UserInfoServlet extends HttpServlet
 		}
 
 		// 身份证校验
-		IDCardValidation idcard = new IDCardValidation(reg_idcard);
-		if (validate && !idcard.validate())
+		if (validate)
 		{
-			validate = false;
-			System.out.println("身份证格式错误。");
-			msg = "请输入正确的身份证号码！";
-		}
-		else
-		{
-			// 从身份证号码读出生日
-			reg_birthday = idcard.getBirthDate();
+			IDCardValidation idcard = new IDCardValidation(reg_idcard);
+			if (!idcard.validate())
+			{
+				validate = false;
+				System.out.println("身份证格式错误。");
+				msg = "请输入正确的身份证号码！";
+			}
+			else
+			{
+				// 从身份证号码读出生日
+				reg_birthday = idcard.getBirthDate();
+			}
 		}
 
 		// 电话号码验证
@@ -271,10 +279,11 @@ public class UserInfoServlet extends HttpServlet
 						request.getParameter("job_title_level" + i) == null ? "" : request.getParameter("job_title_level" + i).trim());
 				try
 				{
-					System.out.println("["+request.getParameter("job_title_date" + i)+"]");
-					rjt.setRjt_date(request.getParameter("job_title_date" + i) == null ? null
-							: (new SimpleDateFormat("yyyy-MM-dd").parse(request.getParameter("job_title_date" + i).trim())));
-					
+					System.out.println("[" + request.getParameter("job_title_date" + i) + "]");
+					rjt.setRjt_date(request.getParameter("job_title_date" + i) == null
+							|| request.getParameter("job_title_date" + i).trim().isEmpty() ? null
+									: (new SimpleDateFormat("yyyy-MM-dd").parse(request.getParameter("job_title_date" + i).trim())));
+
 				}
 				catch (Exception e)
 				{
