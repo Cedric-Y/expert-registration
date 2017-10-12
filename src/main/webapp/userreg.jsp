@@ -5,7 +5,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <title>用户注册</title>
-<script src="<%=request.getContextPath()%>/js/common.js"></script>
+<%-- <script src="<%=request.getContextPath()%>/js/common.js"></script> --%>
 </head>
 <body>
 	<h3>用户注册</h3>
@@ -41,6 +41,7 @@
 						（至少是由字母和数字组成，且3到15位）
 					</td>
 				</tr>
+				<%--
 				<tr>
 					<td width="100px">验证码：</td>
 					<td width="400px">
@@ -52,6 +53,7 @@
 							align="middle" onclick="checkCodeReload()"> （点击图片,换一个） 
 					</td>
 				</tr>
+				--%>
 				<tr>
 					<td colspan="2">
 						<input type="hidden" name="token" value="<%=session.getAttribute("token")%>" />

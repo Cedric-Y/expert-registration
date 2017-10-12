@@ -511,38 +511,38 @@ public class UserLoginServlet extends HttpServlet
 			}
 		}
 
-		// 进行验证码校验
-		String checkCode = request.getParameter("checkCode");
-		// System.out.println("session=" + session.getAttribute("checkCode") + "
-		// ; request=" + checkCode);
-
-		// 验证码已过期（5分钟过期）
-		if (validate && (((String) session.getAttribute("checkCode")) == null || (session.getAttribute("checkCodeTime") != null
-				&& (System.currentTimeMillis() - ((Long) session.getAttribute("checkCodeTime"))) / (1000 * 60) > 5)))
-		{
-			validate = false;
-			System.out.println("验证码已过期。");
-			msg = "验证码已过期,请重新输入！";
-			// out.write("<script>alert('验证码已过期,请重新输入。');</script>");
-		}
-
-		// 验证码为空
-		if (validate && (checkCode.equals("") || checkCode == null))
-		{
-			validate = false;
-			System.out.println("验证码为空。");
-			msg = "请输入验证码！";
-			// out.write("<script>alert('请输入验证码！');</script>");
-		}
-
-		// 验证码输入有误
-		if (validate && !checkCode.equalsIgnoreCase((String) session.getAttribute("checkCode")))
-		{
-			validate = false;
-			System.out.println("验证码错误。");
-			msg = "验证码不正确,请重新输入！";
-			// out.write("<script>alert('验证码不正确,请重新输入。');</script>");
-		}
+//		// 进行验证码校验
+//		String checkCode = request.getParameter("checkCode");
+//		// System.out.println("session=" + session.getAttribute("checkCode") + "
+//		// ; request=" + checkCode);
+//
+//		// 验证码已过期（5分钟过期）
+//		if (validate && (((String) session.getAttribute("checkCode")) == null || (session.getAttribute("checkCodeTime") != null
+//				&& (System.currentTimeMillis() - ((Long) session.getAttribute("checkCodeTime"))) / (1000 * 60) > 5)))
+//		{
+//			validate = false;
+//			System.out.println("验证码已过期。");
+//			msg = "验证码已过期,请重新输入！";
+//			// out.write("<script>alert('验证码已过期,请重新输入。');</script>");
+//		}
+//
+//		// 验证码为空
+//		if (validate && (checkCode.equals("") || checkCode == null))
+//		{
+//			validate = false;
+//			System.out.println("验证码为空。");
+//			msg = "请输入验证码！";
+//			// out.write("<script>alert('请输入验证码！');</script>");
+//		}
+//
+//		// 验证码输入有误
+//		if (validate && !checkCode.equalsIgnoreCase((String) session.getAttribute("checkCode")))
+//		{
+//			validate = false;
+//			System.out.println("验证码错误。");
+//			msg = "验证码不正确,请重新输入！";
+//			// out.write("<script>alert('验证码不正确,请重新输入。');</script>");
+//		}
 
 		if (validate)
 		{
@@ -566,19 +566,56 @@ public class UserLoginServlet extends HttpServlet
 			return;
 		}
 
-		// System.out.println("校验通过了。");
-		// request.getRequestDispatcher("/result.jsp").forward(request,
-		// response);
-
-		// 所有的验证通过，可以进行注册了，注册成功后，将返回记录id
+		// 所有的验证通过
 		int u_id = userRegisterService.userRegister(loginname, email, MD5Encoder.encoder(password1));
 		if (u_id > 0)
 		{
 			System.out.println("注册成功：" + u_id);
 			Writer out = response.getWriter();
-			out.write("<script type='text/javascript'>alert('注册成功！请重新登录。');</script>");
+			out.write("<script type='text/javascript'>alert('注册成功！请到');</script>");
 			request.getRequestDispatcher("/userlogin.jsp").forward(request, response);
 			out.close();
+			
+			//发送激活邮件
+			StringBuffer sb = new StringBuffer();
+			Date currentTime = new Date();
+			SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+			long expireTimestamp = currentTime.getTime() + 30 * 60 * 1000;
+			// String validateCode = MD5Encoder.encoder(email +
+			// currentTime.getTime());
+			String validateCode = UUID.randomUUID().toString();
+
+			switch (reset)
+			{
+			// 重置用户名
+			case "1":
+				sb.append("请在 " + df.format(new Date(expireTimestamp)) + " 之前，点击下面链接重置用户名。</br>");
+				sb.append("<a href=\"http://localhost:8080/expertreg/UserLogin?method=userResetForm");
+				sb.append("&reset=1");
+				sb.append("&id=");
+				sb.append(user.getU_id());
+				sb.append("&email=");
+				sb.append(email);
+				sb.append("&validateCode=");
+				sb.append(validateCode);
+				sb.append("\">重置用户名连接</a>");
+				SendEmail.send(email, "深圳市职业能力专家库-重置用户名", sb.toString());
+				break;
+			// 重置密码
+			case "2":
+				sb.append("请在 " + df.format(new Date(expireTimestamp)) + " 之前，点击下面链接重置密码。</br>");
+				sb.append("<a href=\"http://localhost:8080/expertreg/UserLogin?method=userResetForm");
+				sb.append("&reset=2");
+				sb.append("&id=");
+				sb.append(user.getU_id());
+				sb.append("&email=");
+				sb.append(email);
+				sb.append("&validateCode=");
+				sb.append(validateCode);
+				sb.append("\">重置密码连接</a>");
+				SendEmail.send(email, "深圳市职业能力专家库-重置密码", sb.toString());
+				break;
+			}
 		}
 		else
 		{
@@ -588,6 +625,14 @@ public class UserLoginServlet extends HttpServlet
 			request.getRequestDispatcher("/userreg.jsp").forward(request, response);
 			out.close();
 		}
+	}
+	
+	/**
+	 * 新用户注册，提交注册信息后，从邮件里的连接进行激活
+	 */
+	private void userRegActivation(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
+	{
+		
 	}
 
 	/**

@@ -21,7 +21,7 @@
 	<!-- 新用户注册：用户名、email、密码 -->
 	<insert id="insertUser" useGeneratedKeys="true" keyProperty="u_id">
 		insert into	tbl_user(u_login_name, u_email, u_password, u_type)
-		values(#{loginname}, #{email}, #{password}, 1)
+		values(#{loginname}, #{email}, #{password}, 11)
 	</insert>
 	<!-- 用户登录后，更新其登录时间 -->
 	<update id="updateUserUpdateTime" parameterType="User">
