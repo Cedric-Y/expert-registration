@@ -5,23 +5,37 @@
 		select * from tbl_user
 		where u_id = #{u_id}
 	</select>
-	<!-- 根据用户名或者email以及密码，查询记录 -->
+	<!-- 用户登录：根据用户名或者email以及密码，查询记录 -->
 	<select id="findUserByLoginnameAndPassword" resultType="User">
 		select * from tbl_user
 		where (u_login_name = #{loginname} or u_email = #{loginname})
 			and u_password = #{password}
-			and u_type = 1
+			and u_type in (1,11)
 	</select>
 	<!-- 根据用户登录名或者 email，查询记录 -->
-	<select id="findUserByLoginnameOrEmail" resultType="User">
+	<!-- <select id="findUserByLoginnameOrEmail" resultType="User">
 		select * from tbl_user
 		where (u_login_name = #{loginname} or u_email = #{email})
-			and u_type = 1
+			and u_type in (1,11)
+	</select> -->
+	<!-- 用户注册校验：根据用户登录名，查询记录 -->
+	<select id="findUserByLoginnameForReg" resultType="User">
+		select * from tbl_user
+		where u_login_name = #{loginname}
+			and u_type in (1,11)
 	</select>
-	<!-- 新用户注册：用户名、email、密码 -->
-	<insert id="insertUser" useGeneratedKeys="true" keyProperty="u_id">
-		insert into	tbl_user(u_login_name, u_email, u_password, u_type)
-		values(#{loginname}, #{email}, #{password}, 11)
+	<!-- 用户注册校验：根据email，查询记录 -->
+	<select id="findUserByEmailForReg" resultType="User">
+		select * from tbl_user
+		where u_email = #{email}
+			and u_type in (1,11)
+	</select>
+	<!-- 新用户注册，“用户类型”（u_type）字段设为11，表示“待激活” -->
+	<insert id="insertUser" parameterType="User" useGeneratedKeys="true" keyProperty="u_id">
+		insert into	tbl_user
+			(u_login_name, u_email, u_password, u_type, u_validate_code, u_expire_time)
+		values
+			(#{u_login_name}, #{u_email}, #{u_password}, 11, #{u_validate_code}, #{u_expire_time})
 	</insert>
 	<!-- 用户登录后，更新其登录时间 -->
 	<update id="updateUserUpdateTime" parameterType="User">
@@ -29,11 +43,11 @@
 		set u_update_time = getdate()
 		where u_id = #{User.u_id}
 	</update>
-	<!-- 忘记用户名：根据输入的 Email 查询输入是否正确 -->
+	<!-- 激活账号，或者忘记用户名或密码：根据输入的 Email 查询输入是否正确 -->
 	<select id="findUserByEmail" resultType="User">
 		select * from tbl_user
 		where u_email = #{email}
-			and	u_type = 1
+			and	u_type in (1,11)
 	</select>
 	<!-- 根据用户实体，更新用户信息 -->
 	<update id="updateUserByUser" parameterType="User">
@@ -53,16 +67,20 @@
 		select * from tbl_user
 		where u_id = #{id}
 			and u_email = #{email}
-			and u_validate_code = #{validatecode}
+			and u_validate_code &lt;> '' /* 校验码要不为空 */
+			and u_expire_time > 0 /* 到期时间要大于0 */
+			and u_validate_code = #{validatecode}			
 			and u_expire_time >= #{currenttime}
-			and u_type = 1
+			and (case when #{typecase} = 1 and u_type=1 then 1 
+				when #{typecase} = 2 and u_type=11 then 1
+				when #{typecase} = 3 and u_type in (1,11) then 1 end)=1
 	</select>
 	<!-- 根据用户名，查找除开当前 u_id 之外的记录 -->
 	<select id="findUserByLoginname" resultType="User">
 		select * from tbl_user
 		where u_id &lt;> #{id}
 			and u_login_name = #{loginname}
-			and u_type = 1
+			and u_type in (1,11)
 	</select>
 	<!-- 根据用户 id，重置用户名 -->
 	<update id="resetUserLoginname">
@@ -80,4 +98,12 @@
 			,[u_expire_time] = 0
 		WHERE u_id = #{u_id}
 	</update>
+	<!-- 根据用户ID，更新用户类型 -->
+	<update id="updateUserTypeById">
+		UPDATE [tbl_user]
+		SET [u_type] = #{u_type}
+			,[u_validate_code] = ''
+			,[u_expire_time] = 0
+		WHERE [u_id] = #{u_id}
+	</update>	
 </mapper>  

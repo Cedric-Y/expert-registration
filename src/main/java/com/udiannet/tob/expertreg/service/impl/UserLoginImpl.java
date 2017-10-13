@@ -39,7 +39,7 @@ public class UserLoginImpl implements UserLogin
 	}
 
 	/**
-	 * 忘记用户名：根据输入的 Email 查询输入是否正确
+	 * 忘记用户名或密码：根据输入的 Email 查询输入是否正确
 	 */
 	@Override
 	public User findUserByEmail(String email)
@@ -65,10 +65,10 @@ public class UserLoginImpl implements UserLogin
 	 * 根据用户 id，email，邮件验证码来查询用户
 	 */
 	@Override
-	public User userValidateForReset(int id, String email, String validateCode, long currentTime)
+	public User userValidateFromReset(int id, String email, String validateCode, long currentTime)
 	{
 		UserMapper mapper = sqlSession.getMapper(UserMapper.class);
-		User user = (User) mapper.findUserByValidateCode(id, email, validateCode, currentTime);
+		User user = (User) mapper.findUserByValidateCode(id, email, validateCode, currentTime, 3);
 		return user;
 	}
 

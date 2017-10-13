@@ -22,6 +22,7 @@ public class SendEmail
 	public static final int PORT = Integer.parseInt(AppProperties.getPropertiesValueByKey("SendEmail.port"));
 	public static final String FROM = AppProperties.getPropertiesValueByKey("SendEmail.from");// 发件人的email
 	public static final String PWD = AppProperties.getPropertiesValueByKey("SendEmail.pwd");// 发件人密码
+	public static final String CONTENT_HOST = AppProperties.getPropertiesValueByKey("SendEmail.content.host");// 邮件里的链接的host
 
 	/**
 	 * 获取Session

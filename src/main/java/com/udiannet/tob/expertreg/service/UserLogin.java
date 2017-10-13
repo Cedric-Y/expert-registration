@@ -20,7 +20,7 @@ public interface UserLogin
 	 */
 	//void resetPassword(String pwd);
 	/**
-	 * 忘记用户名：根据输入的 Email 查询输入是否正确
+	 * 忘记用户名或密码：根据输入的 Email 查询输入是否正确
 	 */
 	User findUserByEmail(String email);
 	/**
@@ -30,7 +30,7 @@ public interface UserLogin
 	/**
 	 * 根据用户 id，email，邮件验证码来查询用户
 	 */
-	User userValidateForReset(int id, String email, String validateCode, long currentTime);
+	User userValidateFromReset(int id, String email, String validateCode, long currentTime);
 	/**
 	 * 根据用户名，查找除开当前 u_id 之外的记录
 	 */
