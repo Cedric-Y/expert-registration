@@ -11,12 +11,14 @@
 	<insert id="insertRegistration" parameterType="Registration" useGeneratedKeys="true" keyProperty="reg_id">
 		INSERT INTO [tbl_registration]
 			([reg_u_id],[reg_name],[reg_idcard],[reg_birthday]
+			,[reg_gender],[reg_political_status]
 			,[reg_phone],[reg_photo],[reg_education],[reg_college]
 			,[reg_profession_kind],[reg_profession],[reg_company]
 			,[reg_company_address],[reg_email],[reg_resume]
 			,[reg_create_time],[reg_record_status])
 		VALUES
 			(#{reg_u_id},#{reg_name},#{reg_idcard},#{reg_birthday}
+			,#{reg_gender},#{reg_political_status}
 			,#{reg_phone},#{reg_photo},#{reg_education},#{reg_college}
 			,#{reg_profession_kind},#{reg_profession},#{reg_company}
 			,#{reg_company_address},#{reg_email},#{reg_resume}
@@ -34,6 +36,8 @@
 		      ,[reg_name] = #{reg_name}
 		      ,[reg_idcard] = #{reg_idcard}
 		      ,[reg_birthday] = #{reg_birthday}
+		      ,[reg_gender] = #{reg_gender}
+		      ,[reg_political_status] = #{reg_political_status}
 		      ,[reg_phone] = #{reg_phone}
 		      ,[reg_photo] = #{reg_photo}
 		      ,[reg_education] = #{reg_education}

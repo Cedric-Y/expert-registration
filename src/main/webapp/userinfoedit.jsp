@@ -30,6 +30,15 @@
 					</td>
 				</tr>
 				<tr>
+					<td>政治面貌：</td>
+					<td>
+						<input name="political_status" type="text" />
+					</td>
+					<td>
+						（必填）
+					</td>
+				</tr>
+				<tr>
 					<td>电话：</td>
 					<td>
 						<input name="phone" type="text" />
