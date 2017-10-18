@@ -7,25 +7,25 @@
 	<welcome-file-list>
 		<welcome-file>index.jsp</welcome-file>
 	</welcome-file-list>
-	<servlet>
-		<!-- 用户登录模块 -->
+	<!-- <servlet>
+		用户登录模块
 		<servlet-name>UserLoginServlet</servlet-name>
 		<servlet-class>com.udiannet.tob.expertreg.controller.UserLoginServlet</servlet-class>		
 	</servlet>
 	<servlet>
-		<!-- 用户资料模块 -->
+		用户资料模块
 		<servlet-name>UserInfoServlet</servlet-name>
 		<servlet-class>com.udiannet.tob.expertreg.controller.UserInfoServlet</servlet-class>
 	</servlet>
 	
 	<servlet-mapping>
-		<!-- 用户登录模块 -->
+		用户登录模块
 		<servlet-name>UserLoginServlet</servlet-name>
 		<url-pattern>/UserLogin</url-pattern>
 	</servlet-mapping>
 	<servlet-mapping>
-		<!-- 用户资料模块 -->
+		用户资料模块
 		<servlet-name>UserInfoServlet</servlet-name>
 		<url-pattern>/UserInfo</url-pattern>
-	</servlet-mapping>
+	</servlet-mapping> -->
 </web-app>

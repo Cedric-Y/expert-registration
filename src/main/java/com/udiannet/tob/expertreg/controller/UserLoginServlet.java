@@ -18,6 +18,7 @@ import java.util.UUID;
 
 import javax.imageio.ImageIO;
 import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -41,6 +42,7 @@ import com.udiannet.tob.expertreg.util.TokenProccessor;
 /**
  * 用户登录模块
  */
+@WebServlet(name="UserLoginServlet", urlPatterns="/UserLogin")
 public class UserLoginServlet extends HttpServlet
 {
 	// 登录业务层实例
@@ -362,6 +364,9 @@ public class UserLoginServlet extends HttpServlet
 					if (reg != null) // 用户已经填写过专家资料了，转向显示审核状态页面
 					{
 						System.out.println("转向资料显示页面，记录ID：" + reg.getReg_id());
+						
+						//保存专家资料记录ID
+						session.setAttribute("reg_id", reg.getReg_id());
 
 						// 显示注册信息
 						request.setAttribute("reg", (new GsonBuilder().create()).toJson(reg));
@@ -374,6 +379,7 @@ public class UserLoginServlet extends HttpServlet
 					else // 用户还没填写过专家资料，转向填写资料页面
 					{
 						System.out.println("转向资料编辑页面，用户ID：" + user.getU_id());
+						session.setAttribute("reg_id", -1);
 						request.getRequestDispatcher("/userinfoedit.jsp").forward(request, response);
 					}
 				}

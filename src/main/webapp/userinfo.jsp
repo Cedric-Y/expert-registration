@@ -24,6 +24,6 @@
 		%>
 	</p>
 	<hr />
-	<a href="${pageContext.request.contextPath}/controller/UserInfoServlet?method=userInfoEditForm">编辑</a>
+	<a href="${pageContext.request.contextPath}/UserInfo?method=userInfoEditForm">编辑</a>
 </body>
 </html>

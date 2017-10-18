@@ -8,7 +8,7 @@
 </head>
 <body>
 	<h6><%=session.getAttribute("msg")%></h6>
-	<form action="${pageContext.request.contextPath}/UserInfo?method=userInfoEditSubmit" method="post">
+	<form action="${pageContext.request.contextPath}/UserInfo?method=userInfoEditSubmit" method="post" enctype="multipart/form-data">
 		<table>
 			<tbody>
 				<tr>
@@ -50,7 +50,7 @@
 				<tr>
 					<td>一寸照：</td>
 					<td>
-						<input name="photo" type="text" />
+						<input name="photo" type="file" />
 					</td>
 					<td>
 					</td>
@@ -118,7 +118,8 @@
 				<tr>
 					<td>个人简历：</td>
 					<td>
-						<input name="resume" type="text" />
+						<input name="resume" type="file" />
+						<%-- <input name="resume" type="text" /> --%>
 					</td>
 					<td>
 						（必填）
@@ -127,7 +128,7 @@
 				<tr>
 					<td colspan="3">
 						<input type="hidden" name="token" value="<%=session.getAttribute("token")%>" />
-						<input type="hidden" name="id" value="<%=session.getAttribute("reg_id")%>" />
+						<input type="hidden" name="reg_id" value="<%=session.getAttribute("reg_id")%>" />
 						<input type="hidden" name="u_id" value="<%=session.getAttribute("u_id")%>" />
 					</td>
 				</tr>

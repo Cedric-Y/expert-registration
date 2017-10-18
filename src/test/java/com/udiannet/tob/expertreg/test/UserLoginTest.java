@@ -86,4 +86,19 @@ public class UserLoginTest
 //	{
 //		System.out.println(UUID.randomUUID().toString());
 //	}
+	
+	@Test
+	public void test01()
+	{
+//		System.out.println(System.getProperty("java.io.tmpdir"));
+//		String list = "1, 2,3";
+//		String[] ss = list.split(",");
+//		
+//		for(int i=0; i<ss.length;i++)
+//		System.out.println(ss[i]);
+		
+//		System.out.println("jPg".equalsIgnoreCase("JpG"));
+		
+		System.out.println(System.getProperty("file.separator"));
+	}
 }
